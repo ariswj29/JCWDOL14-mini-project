@@ -43,7 +43,6 @@ model User {
   
   profile   Profile[]
   event Event[]
-  attandee Attandee[]
   @@map("users")
 }
 
@@ -74,31 +73,3 @@ model Event {
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
 
-  attandee Attandee []
-  transaction Transaction []
-   @@map("events")
-}
-
-model Attandee{
-  id Int @id @default(autoincrement())
-  qn String @db.VarChar(4)
-  event Event @relation(fields: [eventId], references: [id])
-  eventId Int 
-  user User @relation(fields: [userId], references: [id])
-  userId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- @@map("attandees")
-}
-
-model Transaction{
-  id Int @id @default(autoincrement())
-  date DateTime
-  price Int
-  event Event @relation(fields: [eventId], references: [id])
-  eventId Int
-  userId Int
-  createdAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-   @@map("transactions")
-}
