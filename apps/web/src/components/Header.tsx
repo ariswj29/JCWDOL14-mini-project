@@ -12,7 +12,7 @@ export const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className="grid md:grid-cols-3 grid-cols-2 md:px-40 px-4 items-center bg-[#C5DCFF] sticky top-0 z-50">
+    <header className="grid md:grid-cols-3 grid-cols-2 md:px-40 px-4 items-center bg-secondary sticky top-0 z-50">
       <div className="md:col-span-2 sm:col-span-1 py-2">
         <Link href="/">
           <Image src="/logo.svg" alt="GoTicks" width={150} height={25} />
