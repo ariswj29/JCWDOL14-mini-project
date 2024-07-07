@@ -97,7 +97,7 @@ export default function RegisterPage() {
               <select
                 id="roleId"
                 required
-                className="mt-1 block w-full px-2 py-2 pr-10 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                className="mt-1 block w-full px-2 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
               >
                 <option value="" disabled selected>
                   Select Role
