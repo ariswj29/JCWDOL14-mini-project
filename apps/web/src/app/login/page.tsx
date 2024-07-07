@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function LoginPage() {
@@ -56,12 +57,12 @@ export default function LoginPage() {
               Login
             </button>
             <hr className="my-4" />
-            <button
-              type="button"
-              className="w-full py-2 px-3 bg-primary border border-secondary rounded-md hover:bg-secondary hover:font-bold"
+            <Link
+              href="/register"
+              className="block w-full text-center py-2 px-3 bg-primary border border-secondary rounded-md hover:bg-secondary hover:font-bold"
             >
               Don{"'"}t have an account? Register here
-            </button>
+            </Link>
           </form>
         </div>
       </div>
