@@ -1,44 +1,73 @@
 'use client';
 
+import { registerProcess } from '@/api/auth';
+import { ShowMessage } from '@/components/ShowMessage';
 import Link from 'next/link';
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setShowMessage(true);
+
+    const data = {
+      firstName: e.target.firstName.value,
+      lastName: e.target.lastName.value,
+      roleId: e.target.roleId.value,
+      email: e.target.email.value,
+      password: e.target.password.value,
+      usingReferralCode: e.target.referralCode.value,
+    };
+    registerProcess(data);
+    e.target.reset();
+    setTimeout(() => {
+      setShowMessage(false);
+    }, 7000);
   };
 
   return (
     <section className="p-12 max-w-screen-xl mx-auto items-center">
-      <div className="grid md:grid-cols-3 sm:grid-cols-1">
-        <div className="p-12 sm:p-16 bg-secondary border border-secondary shadow-sm w-full">
-          <h3 className="text-2xl font-bold ">Welcome to Register</h3>
-          <p className="my-2">
-            Register your account and access for the features
-          </p>
-          <div className="my-4">
-            <label htmlFor="refferalCode" className="block text-sm font-medium">
-              Referral Code (Optional)
-            </label>
-            <input
-              type="text"
-              id="refferalCode"
-              className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
-            />
-            <label
-              htmlFor="refferalCode"
-              className="mt-2 block text-xs font-medium"
-            >
-              If you have a referral code, please enter it here to get a
-              discount coupon.
-            </label>
+      {showMessage && (
+        <ShowMessage
+          name="Register Success"
+          desc="Your account has been successfully registered"
+          show={showMessage}
+        />
+      )}
+      <form onSubmit={handleSubmit}>
+        <div className="grid md:grid-cols-3 sm:grid-cols-1">
+          <div className="p-12 sm:p-16 bg-secondary border border-secondary shadow-sm w-full">
+            <h3 className="text-2xl font-bold ">Welcome to Register</h3>
+            <p className="my-2">
+              Register your account and access for the features
+            </p>
+            <div className="my-4">
+              <label
+                htmlFor="referralCode"
+                className="block text-sm font-medium"
+              >
+                Referral Code (Optional)
+              </label>
+              <input
+                type="text"
+                id="referralCode"
+                maxLength={8}
+                className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+              />
+              <label
+                htmlFor="refferalCode"
+                className="mt-2 block text-xs font-medium"
+              >
+                If you have a referral code, please enter it here to get a
+                discount coupon.
+              </label>
+            </div>
           </div>
-        </div>
-        <div className="col-span-2 bg-primary shadow-md w-full">
-          <form onSubmit={handleSubmit} className="p-8">
+          <div className="col-span-2 p-4 bg-primary shadow-md w-full">
             <div className="mb-4">
               <label htmlFor="firstName" className="block text-sm font-medium">
                 First Name <span className="text-red-500">*</span>
@@ -62,15 +91,15 @@ export default function RegisterPage() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="role" className="block text-sm font-medium">
+              <label htmlFor="roleId" className="block text-sm font-medium">
                 Role <span className="text-red-500">*</span>
               </label>
               <select
-                id="role"
+                id="roleId"
                 required
-                className="mt-1 block w-full px-2 py-2 pr-10 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                className="mt-1 block w-full px-2 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
               >
-                <option value="" disabled>
+                <option value="" disabled selected>
                   Select Role
                 </option>
                 <option value="1">Customer</option>
@@ -120,9 +149,9 @@ export default function RegisterPage() {
             >
               Have an account? Login here
             </Link>
-          </form>
+          </div>
         </div>
-      </div>
+      </form>
     </section>
   );
 }

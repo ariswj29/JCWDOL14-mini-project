@@ -19,7 +19,8 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { firstName, lastName, roleId, email, password } = req.body;
+    const { firstName, lastName, roleId, email, password, usingReferralCode } =
+      req.body;
     const existingUser = await prisma.user.findFirst({
       where: {
         email,
@@ -34,9 +35,10 @@ export const register = async (req: Request, res: Response) => {
       data: {
         firstName,
         lastName,
-        roleId,
+        roleId: Number(roleId),
         email,
         password: hashedPassword,
+        usingReferralCode,
       },
     });
     res.status(201).json({ message: 'success', data: user });
