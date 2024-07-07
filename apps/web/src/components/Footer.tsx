@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-[#C5DCFF] p-8">
+    <footer className="w-full bg-secondary p-8">
       <div className="grid md:grid-cols-5 sm:grid-cols-1 gap-4 max-w-screen-xl mx-auto">
         <div className="col-span-2 px-6">
           <Image src="/logo.png" alt="RizzCorps" width={150} height={25} />
