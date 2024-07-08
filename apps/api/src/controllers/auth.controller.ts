@@ -62,11 +62,17 @@ export const login = async (req: Request, res: Response) => {
       roleId: user?.roleId,
     };
     if (!user) {
-      return res.status(400).json({ error: 'Invalid email or password' });
+      return res.json({
+        status: 'error',
+        message: 'Invalid email or password',
+      });
     }
     const invalidPassword = await compare(password, user.password);
     if (!invalidPassword) {
-      return res.status(400).json({ error: 'Invalid email or password' });
+      return res.json({
+        status: 'error',
+        message: 'Invalid email or password',
+      });
     }
     const jwtPayload = {
       firstName: user.firstName,
@@ -76,7 +82,12 @@ export const login = async (req: Request, res: Response) => {
     const token = await sign(jwtPayload, 'mySecret', {
       expiresIn: '1h',
     });
-    res.status(200).json({ message: 'success', data: data, token });
+    res.status(200).json({
+      status: 'success',
+      message: 'You have successfully logged in',
+      data: data,
+      token,
+    });
   } catch (error) {
     res.status(400).json({ error: 'error' });
   }
