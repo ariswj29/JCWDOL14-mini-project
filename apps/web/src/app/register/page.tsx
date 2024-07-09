@@ -1,40 +1,77 @@
 'use client';
 
-import { registerProcess } from '@/api/auth';
+import { checkReferralCodeProcess, registerProcess } from '@/api/auth';
 import { ShowMessage } from '@/components/ShowMessage';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function RegisterPage() {
-  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const [data, setData] = useState({
+    firstName: '',
+    lastName: '',
+    roleId: '',
+    email: '',
+    password: '',
+    usingReferralCode: '',
+  });
+  const [dataMessage, setDataMessage] = useState({
+    message: '',
+    status: '',
+    data: {},
+  });
   const [showMessage, setShowMessage] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [referralCodeValid, setReferralCodeValid] = useState({
+    message: '',
+    status: '',
+  });
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setShowMessage(true);
+    try {
+      const response = await registerProcess(data);
 
-    const data = {
-      firstName: e.target.firstName.value,
-      lastName: e.target.lastName.value,
-      roleId: e.target.roleId.value,
-      email: e.target.email.value,
-      password: e.target.password.value,
-      usingReferralCode: e.target.referralCode.value,
-    };
-    registerProcess(data);
-    e.target.reset();
-    setTimeout(() => {
-      setShowMessage(false);
-    }, 7000);
+      const { status, message } = response;
+
+      setDataMessage(response);
+
+      if (status === 'success') {
+        setShowMessage(true);
+        setTimeout(() => {
+          setShowMessage(false);
+
+          router.push('/login');
+        }, 3000);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const checkReferralCode = async () => {
+    try {
+      const response = await checkReferralCodeProcess(data);
+      const { status, message } = response;
+      setReferralCodeValid({ message, status });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <section className="p-12 max-w-screen-xl mx-auto items-center">
       {showMessage && (
         <ShowMessage
-          name="Register Success"
-          desc="Your account has been successfully registered"
+          name={
+            dataMessage.status === 'success'
+              ? 'Register Success'
+              : 'Register Failed'
+          }
+          desc={dataMessage.message}
+          status={dataMessage.status}
           show={showMessage}
         />
       )}
@@ -52,12 +89,31 @@ export default function RegisterPage() {
               >
                 Referral Code (Optional)
               </label>
-              <input
-                type="text"
-                id="referralCode"
-                maxLength={8}
-                className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
-              />
+              <div className="flex items-center">
+                <input
+                  type="text"
+                  id="referralCode"
+                  value={data.usingReferralCode}
+                  onChange={(e) =>
+                    setData({ ...data, usingReferralCode: e.target.value })
+                  }
+                  maxLength={8}
+                  className="mt-1 block w-2/4 md:w-3/5 px-2 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                />
+                <span
+                  className="mt-1 px-2 py-3 text-xs hover:font-bold top-1/2 border border-primary rounded-md cursor-pointer transform"
+                  onClick={() => checkReferralCode()}
+                >
+                  Check Code
+                </span>
+              </div>
+              {referralCodeValid.message !== '' ? (
+                <p
+                  className={`my-2 text-sm font-semibold ${referralCodeValid.status === 'error' ? 'text-red-500' : 'text-green-500'}`}
+                >
+                  {referralCodeValid.message}
+                </p>
+              ) : null}
               <label
                 htmlFor="refferalCode"
                 className="mt-2 block text-xs font-medium"
@@ -75,6 +131,10 @@ export default function RegisterPage() {
               <input
                 type="text"
                 id="firstName"
+                value={data.firstName}
+                onChange={(e) =>
+                  setData({ ...data, firstName: e.target.value })
+                }
                 required
                 className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
               />
@@ -86,6 +146,8 @@ export default function RegisterPage() {
               <input
                 type="text"
                 id="lastName"
+                value={data.lastName}
+                onChange={(e) => setData({ ...data, lastName: e.target.value })}
                 required
                 className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
               />
@@ -97,6 +159,8 @@ export default function RegisterPage() {
               <select
                 id="roleId"
                 required
+                value={data.roleId}
+                onChange={(e) => setData({ ...data, roleId: e.target.value })}
                 className="mt-1 block w-full px-2 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
               >
                 <option value="" disabled selected>
@@ -113,6 +177,8 @@ export default function RegisterPage() {
               <input
                 type="email"
                 id="email"
+                value={data.email}
+                onChange={(e) => setData({ ...data, email: e.target.value })}
                 required
                 className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
               />
@@ -125,6 +191,10 @@ export default function RegisterPage() {
                 <input
                   type={showPassword ? 'text' : 'password'}
                   id="password"
+                  value={data.password}
+                  onChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
                   required
                   className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
                 />
