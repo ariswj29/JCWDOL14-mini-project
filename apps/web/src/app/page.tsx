@@ -1,4 +1,4 @@
-import { Category } from '@/components/homeSection/Category';
+import Category from '@/components/homeSection/Category';
 import { ListEvent } from '@/components/homeSection/ListEvent';
 
 export default function Home() {

@@ -17,3 +17,10 @@ export async function loginProcess(data: any) {
 
   return res.data;
 }
+
+export async function checkReferralCodeProcess(data: any) {
+  const url = base_url_api + '/users/check-referral-code';
+  const res = await axios.post(url, data);
+
+  return res.data;
+}
