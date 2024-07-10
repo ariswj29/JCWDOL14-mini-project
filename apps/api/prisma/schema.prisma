@@ -74,6 +74,8 @@ model Event {
   userId Int 
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
 
   attandee Attandee []
   transaction Transaction []
@@ -102,4 +104,16 @@ model Transaction{
   createdAt DateTime @default(now())
   updateAt DateTime @updatedAt
    @@map("transactions") 
+}
+
+model Category{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(50)
+  icon String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+
+  event Event[]
+  @@map("categories")
 }
