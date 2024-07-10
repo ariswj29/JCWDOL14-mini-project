@@ -32,13 +32,14 @@ export default function LoginPage() {
       if (status === 'success') {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('role', data.roleId == 1 ? 'customer' : 'admin');
         setTimeout(() => {
           setShowMessage(false);
 
           if (data.roleId === 1) {
-            router.push('/');
+            window.location.href = '/';
           } else {
-            router.push('/dashboard');
+            window.location.href = '/dashboard';
           }
         }, 3000);
       }
@@ -74,7 +75,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="p-8">
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-medium">
-                Email
+                Email <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"

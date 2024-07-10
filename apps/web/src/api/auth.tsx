@@ -24,3 +24,9 @@ export async function checkReferralCodeProcess(data: any) {
 
   return res.data;
 }
+
+export async function logoutProcess() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  localStorage.removeItem('role');
+}
