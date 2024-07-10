@@ -2,14 +2,16 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { navbars } from '@/data/data';
+import { navbars, navbarsAuth } from '@/data/data';
+import { logoutProcess } from '@/api/auth';
 
-export const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+export const Header = (props: any) => {
+  console.log('props', props);
+  const router = useRouter();
   const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="grid md:grid-cols-3 grid-cols-2 md:px-40 px-4 items-center bg-secondary sticky top-0 z-50">
@@ -38,16 +40,48 @@ export const Header = () => {
       >
         <nav>
           <ul className="grid md:grid-cols-3 md:gap-0 gap-4">
-            {navbars.map((navbar) => (
-              <li key={navbar.id} className="text-center">
+            {props.token === null
+              ? navbars.map((navbar) => (
+                  <li key={navbar.id} className="text-center">
+                    <Link
+                      href={navbar.link}
+                      className={
+                        pathname === navbar.link ? 'active' : 'nav-link'
+                      }
+                    >
+                      {navbar.title}
+                    </Link>
+                  </li>
+                ))
+              : navbarsAuth.map((navbar) => (
+                  <li key={navbar.id} className="text-center">
+                    <Link
+                      href={navbar.link}
+                      className={
+                        pathname === navbar.link ? 'active' : 'nav-link'
+                      }
+                    >
+                      {navbar.title}
+                    </Link>
+                  </li>
+                ))}
+            {props.token !== null ? (
+              <li className="text-center">
                 <Link
-                  href={navbar.link}
-                  className={pathname === navbar.link ? 'active' : 'nav-link'}
+                  href="/#"
+                  className="nav-link"
+                  onClick={() => {
+                    async function deleteSession() {
+                      await logoutProcess();
+                      window.location.href = '/login';
+                    }
+                    deleteSession();
+                  }}
                 >
-                  {navbar.title}
+                  Logout
                 </Link>
               </li>
-            ))}
+            ) : null}
           </ul>
         </nav>
       </div>

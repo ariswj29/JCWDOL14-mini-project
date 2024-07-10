@@ -15,3 +15,16 @@ export const navbars = [
     link: '/register',
   },
 ];
+
+export const navbarsAuth = [
+  {
+    id: 1,
+    title: 'Home',
+    link: '/',
+  },
+  {
+    id: 2,
+    title: 'Profile',
+    link: '/profile',
+  },
+];
