@@ -70,7 +70,7 @@ const events = [
 
 const EventList = () => {
   return (
-    <div className="container mx-auto p-12">
+    <div className="container mx-auto px-8 py-12">
       <h1 className="text-3xl font-bold mb-4">Upcoming Events</h1>
       <div className="grid grid-cols-1  lg:grid-cols-4 gap-4 cursor-pointer ">
         {events.map((event) => (
