@@ -5,7 +5,8 @@ import './globals.css';
 import { useEffect, useState } from 'react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
-import { set } from 'cypress/types/lodash';
+import { Navbar } from '@/components/Navbar';
+import { Sidebar } from '@/components/Sidebar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,7 +17,6 @@ export default function UserLayout({
 }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [token, setToken] = useState<string | null>('');
-  console.log('token layout', token);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -33,9 +33,9 @@ export default function UserLayout({
     return (
       <html lang="en">
         <body className={inter.className}>
-          <div className="admin-header">Admin Header</div>
+          <Navbar />
           {children}
-          <div className="admin-footer">Admin Footer</div>
+          <Sidebar />
         </body>
       </html>
     );

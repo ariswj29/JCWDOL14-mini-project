@@ -8,7 +8,6 @@ import { navbars, navbarsAuth } from '@/data/data';
 import { logoutProcess } from '@/api/auth';
 
 export const Header = (props: any) => {
-  console.log('props', props);
   const router = useRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
