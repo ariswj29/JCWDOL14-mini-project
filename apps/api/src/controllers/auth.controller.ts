@@ -92,6 +92,7 @@ export const login = async (req: Request, res: Response) => {
       lastName: user?.lastName,
       email: user?.email,
       roleId: user?.roleId,
+      profileId: user?.id,
     };
     if (!user) {
       return res.json({
