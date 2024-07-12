@@ -25,6 +25,13 @@ export async function checkReferralCodeProcess(data: any) {
   return res.data;
 }
 
+export async function getProfileProcess(id: number) {
+  const url = base_url_api + '/profile/' + id;
+  const res = await axios.get(url);
+
+  return res.data;
+}
+
 export async function logoutProcess() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
