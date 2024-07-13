@@ -39,7 +39,7 @@ export default function LoginPage() {
           if (data.roleId === 1) {
             window.location.href = '/';
           } else {
-            window.location.href = '/dashboard';
+            window.location.href = '/admin/dashboard';
           }
         }, 3000);
       }
