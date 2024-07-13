@@ -1,6 +1,6 @@
 'use client';
 
-import { getProfileProcess } from '@/api/auth';
+import { getProfileProcess } from '@/api/profile';
 import EditProfile from '@/components/profileSection/EditProfile';
 import Points from '@/components/profileSection/Points';
 import SidebarProfile from '@/components/profileSection/SidebarProfile';
@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 
 export default function ProfilePage() {
   interface Profile {
+    id: number;
     saldo: number;
     points: number;
     discount: number;
@@ -15,6 +16,7 @@ export default function ProfilePage() {
   }
 
   const [profile, setProfile] = useState<Profile>({
+    id: 0,
     saldo: 0,
     points: 0,
     discount: 0,
@@ -58,6 +60,7 @@ export default function ProfilePage() {
         <div className="col-span-2 bg-primary shadow-md w-full">
           <EditProfile profile={user} setProfile={setUser} />
           <Points
+            id={profile.id}
             saldo={profile.saldo}
             points={profile.points}
             discounts={profile.discount}

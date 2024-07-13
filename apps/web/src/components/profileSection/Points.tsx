@@ -60,7 +60,9 @@ export default function Points(props: any) {
         >
           Top Up Saldo
         </a>
-        {topUpModal === true ? <Topup setModal={setTopUpModal} /> : null}
+        {topUpModal === true ? (
+          <Topup profileId={props.id} setModal={setTopUpModal} />
+        ) : null}
       </div>
     </div>
   );
