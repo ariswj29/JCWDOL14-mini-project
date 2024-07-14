@@ -26,7 +26,9 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      <EventList />
+      <div>
+        <EventList />
+      </div>
     </main>
   );
 };

@@ -1,3 +1,7 @@
+import { editProfileProcess } from '@/api/profile';
+import { ShowMessage } from '../ShowMessage';
+import { useState } from 'react';
+
 export default function EditProfile(props: {
   profile: {
     firstName: string;
@@ -14,12 +18,56 @@ export default function EditProfile(props: {
     address: string;
   }) => void;
 }) {
+  const [dataMessage, setDataMessage] = useState({
+    message: '',
+    status: '',
+    data: {},
+  });
+  const [showMessage, setShowMessage] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const user = localStorage.getItem('user');
+    const { profileId } = JSON.parse(user as string);
+    try {
+      const response = await editProfileProcess(profileId, props.profile);
+
+      const { status } = response;
+
+      setDataMessage(response);
+
+      if (status === 'success') {
+        setShowMessage(true);
+        setTimeout(() => {
+          setShowMessage(false);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div id="edit-profile" className="p-8">
+      {showMessage === true ? (
+        <ShowMessage
+          name={
+            dataMessage.status === 'success'
+              ? 'Updated Success'
+              : 'Updated Failed'
+          }
+          desc={dataMessage.message}
+          status={dataMessage.status}
+          show={showMessage}
+        />
+      ) : null}
       <h3 className="text-2xl font-bold ">Edit Profile</h3>
       <p className="my-2">Edit your profile here</p>
 
-      <div className="grid md:grid-cols-2 gap-2 items-center">
+      <form
+        className="grid md:grid-cols-2 gap-2 items-center"
+        onSubmit={handleSubmit}
+      >
         <div className="col-span-2 md:col-span-1 py-1">
           <label htmlFor="name" className="block text-sm font-medium">
             First Name <span className="text-red-500">*</span>
@@ -101,7 +149,7 @@ export default function EditProfile(props: {
         <button className="col-span-2 p-2 mt-4 bg-secondary rounded-md hover:font-bold cursor-pointer">
           Save Changes
         </button>
-      </div>
+      </form>
     </div>
   );
 }
