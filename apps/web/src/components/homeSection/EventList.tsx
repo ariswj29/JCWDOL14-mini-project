@@ -1,74 +1,39 @@
-import React from 'react';
+'use client';
+
 import Image from 'next/image';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { getAllEvents } from '@/api/event';
 
-const events = [
-  {
-    id: 1,
-    thumbnails: '/event1.png',
-    title: 'Event One',
-    date: '2024-07-10',
-    location: 'Jakarta',
-    price: 'Rp. 100.000',
-  },
-  {
-    id: 2,
-    thumbnails: '/event1.png',
-    title: 'Event Two',
-    date: '2024-07-12',
-    location: 'Jakarta',
-    price: 'Rp. 100.000',
-  },
-  {
-    id: 3,
-    thumbnails: '/event1.png',
-    title: 'Event Three',
-    date: '2024-07-15',
-    location: 'Jakarta',
-    price: 'Rp. 100.000',
-  },
-  {
-    id: 4,
-    thumbnails: '/event1.png',
-    title: 'Event Four',
-    date: '2024-07-20',
-    location: 'Jakarta',
-    price: 'Rp. 100.000',
-  },
-  {
-    id: 5,
-    thumbnails: '/event1.png',
-    title: 'Event Five',
-    date: '2024-07-22',
-    location: 'Jakarta',
-    price: 'Rp. 100.000',
-  },
-  {
-    id: 6,
-    thumbnails: '/event1.png',
-    title: 'Event Six',
-    date: '2024-07-25',
-    location: 'Jakarta',
-    price: 'Rp. 100.000',
-  },
-  {
-    id: 7,
-    thumbnails: '/event1.png',
-    title: 'Event Seven',
-    date: '2024-07-30',
-    location: 'Jakarta',
-    price: 'Rp. 100.000',
-  },
-  {
-    id: 8,
-    thumbnails: '/event1.png',
-    title: 'Event Eight',
-    date: '2024-08-02',
-    location: 'Jakarta',
-    price: 'Rp. 100.000',
-  },
-];
+export default function EventList() {
+  interface Event {
+    id: number;
+    name: string;
+    price: number | null;
+    date: string;
+    location: string;
+    image: string;
+  }
 
-const EventList = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+
+  const formatDate = (dateString: string) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString('id-ID', options);
+  };
+
+  useEffect(() => {
+    const fetchEventList = async () => {
+      try {
+        const response = await getAllEvents(events);
+        setEvents(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchEventList();
+  }, []);
+
   return (
     <div className="container mx-auto px-8 py-12">
       <h1 className="text-3xl font-bold mb-4">Upcoming Events</h1>
@@ -78,21 +43,21 @@ const EventList = () => {
             key={event.id}
             className="p-4 bg-white hover:bg-secondary shadow-lg rounded-lg border-2 border-secondary transform transition-transform duration-300 hover:scale-105"
           >
-            <Image
-              src={event.thumbnails}
-              alt={event.title}
-              width={300}
-              height={200}
-            />
-            <h2 className="text-xl font-semibold pt-4 ">{event.title}</h2>
-            <p className="text-gray-600">{event.date}</p>
-            <p className="text-gray-600">{event.location}</p>
-            <p className="text-gray-600">{event.price}</p>
+            <Link href={`/${event.id}`}>
+              <Image
+                src={`http://localhost:8000/uploads/${event.image}`}
+                alt={event.name}
+                width={300}
+                height={200}
+              />
+              <h2 className="text-xl font-semibold pt-4 ">{event.name}</h2>
+              <p className="text-gray-600">{formatDate(event.date)}</p>
+              <p className="text-gray-600">{event.location}</p>
+              <p className="text-gray-600">{event.price}</p>
+            </Link>
           </div>
         ))}
       </div>
     </div>
   );
-};
-
-export default EventList;
+}

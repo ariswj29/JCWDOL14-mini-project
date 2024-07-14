@@ -38,7 +38,7 @@ const Category = () => {
             }`}
             onClick={() => handleClick(index)}
           >
-            <span className="text-secondary hover:text-white">
+            <span className="p-5 text-secondary hover:text-white">
               {' '}
               {category.icon}
             </span>

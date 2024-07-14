@@ -16,7 +16,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <main>
+    <main className="max-w-screen-xl mx-auto items-center">
       <Category />
       <div className="container mx-auto mt-8 px-4">
         <div className="flex flex-col md:flex-row items-center justify-between mb-4  space-y-4 md:space-y-0 md:space-x-4 w-full md:w-auto h-full">
@@ -26,7 +26,9 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      <EventList />
+      <div>
+        <EventList />
+      </div>
     </main>
   );
 };
