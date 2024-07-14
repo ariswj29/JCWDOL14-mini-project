@@ -9,14 +9,14 @@ export async function getProfileProcess(id: number) {
   return res.data;
 }
 
-export async function editProfileProcess(id: number, data: any) {
+export async function editProfileProcess(id: number, data: {}) {
   const url = base_url_api + '/profile/' + id;
   const res = await axios.put(url, data);
 
   return res.data;
 }
 
-export async function topUpProcess(id: number, data: any) {
+export async function topUpProcess(id: number, data: {}) {
   const url = base_url_api + '/profile/top-up/' + id;
   const res = await axios.put(url, data);
 

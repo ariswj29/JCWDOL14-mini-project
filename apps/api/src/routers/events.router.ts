@@ -5,11 +5,12 @@ import {
   getEvent,
   updateEvent,
 } from '@/controllers/events.controller';
+import { Router } from 'express';
 import upload from '@/middleware/uploader';
-import { NextFunction, Request, Response, Router } from 'express';
 
 const router = Router();
 
+// Tambahkan middleware multer ke dalam route POST dan PUT
 router.post('/', upload.single('image'), createEvents);
 router.get('/', getAllEvents);
 router.get('/:id', getEvent);

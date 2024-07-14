@@ -17,6 +17,11 @@ export default function EventList() {
 
   const [events, setEvents] = useState<Event[]>([]);
 
+  const formatDate = (dateString: string) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString('id-ID', options);
+  };
+
   useEffect(() => {
     const fetchEventList = async () => {
       try {
@@ -46,7 +51,7 @@ export default function EventList() {
                 height={200}
               />
               <h2 className="text-xl font-semibold pt-4 ">{event.name}</h2>
-              <p className="text-gray-600">{event.date}</p>
+              <p className="text-gray-600">{formatDate(event.date)}</p>
               <p className="text-gray-600">{event.location}</p>
               <p className="text-gray-600">{event.price}</p>
             </Link>
