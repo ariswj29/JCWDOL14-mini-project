@@ -10,9 +10,10 @@ export async function getAllEvents(data: {}) {
 
   return res.data;
 }
-export async function getEvent(id: Number, data: {}) {
-  const url = base_url_api + '/events' + id;
-  const res = await axios.get(url, data);
+export async function getEvent(id: Number) {
+  const url = base_url_api + '/events/' + id;
+  console.log(url, 'url');
+  const res = await axios.get(url);
 
   return res.data;
 }
