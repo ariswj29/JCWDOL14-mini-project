@@ -73,46 +73,22 @@ export async function getEvent(req: Request, res: Response) {
 }
 
 export async function updateEvent(req: Request, res: Response) {
-  try {
-    const { id } = req.params;
-    const {
-      name,
-      isFree,
-      price,
-      date,
-      time,
-      location,
-      description,
-      availableSeats,
-      categoryId,
-      userId,
-    } = req.body;
-    const image = req.file?.filename;
+  // try {
+  const { id } = req.params;
+  const image = req.file?.filename;
 
-    const event = await prisma.event.update({
-      where: { id: Number(id) },
-      data: {
-        name,
-        image,
-        isFree: Boolean(isFree),
-        price: isFree ? 0 : price,
-        date: new Date(date),
-        time,
-        location,
-        description,
-        availableSeats: Number(availableSeats),
-        categoryId: Number(categoryId),
-        userId: Number(userId),
-      },
-    });
+  const event = await prisma.event.update({
+    where: { id: Number(id) },
+    data: { ...req.body, image },
+  });
 
-    res.status(200).json({
-      message: 'success update event',
-      data: event,
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Something went wrong' });
-  }
+  res.status(200).json({
+    message: 'success update event',
+    data: event,
+  });
+  // } catch (error) {
+  //   res.status(500).json({ error: 'Something went wrong' });
+  // }
 }
 
 export async function deleteEvent(req: Request, res: Response) {
