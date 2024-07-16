@@ -55,14 +55,15 @@ export default function EventDetails(context: any) {
     <div className="container max-w-screen-xl mx-auto items-center p-12">
       {event.image && (
         <div className="flex justify-center">
-          <Image
-            src={`http:localhost:8000/uploads/${event.image}`}
-            alt={event.name}
-            width={800}
-            height={400}
-            objectFit="cover"
-            className="mb-4"
-          />
+          <div className="relative w-full h-96 mb-4">
+            <Image
+              src={`http://localhost:8000/uploads/${event.image}`}
+              alt={event.name}
+              layout="fill"
+              objectFit="cover"
+              className="rounded-lg"
+            />
+          </div>
         </div>
       )}
       <h1 className="text-3xl font-bold mb-4">{event.name}</h1>
