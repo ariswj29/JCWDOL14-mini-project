@@ -7,6 +7,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Navbar } from '@/components/Navbar';
 import { Sidebar } from '@/components/Sidebar';
+import Image from 'next/image';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,24 +17,46 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [token, setToken] = useState<string | null>('');
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<any>({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const role = localStorage.getItem('role');
       const token = localStorage.getItem('token');
+      const users = localStorage.getItem('user');
       setToken(token);
+      setUser(JSON.parse(users || '{}'));
       if (role === 'admin') {
         setIsAdmin(true);
       }
+      setLoading(false);
     }
-  }, [token]);
+  }, []);
+
+  if (loading) {
+    return (
+      <html lang="en">
+        <body
+          className={`${inter.className} flex items-center justify-center h-screen`}
+        >
+          <div className="flex flex-col items-center justify-center">
+            <div className="font-bold text-3xl my-2">
+              <Image src="/logo.svg" alt="GoTicks" width={250} height={75} />
+            </div>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        </body>
+      </html>
+    );
+  }
 
   if (isAdmin) {
     return (
       <html lang="en">
         <body className={inter.className}>
-          <Navbar />
+          <Navbar users={user} />
           {children}
           <Sidebar />
         </body>

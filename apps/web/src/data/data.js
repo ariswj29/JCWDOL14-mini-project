@@ -35,22 +35,22 @@ export const sidebars = [
   {
     id: 1,
     title: 'Dashboard',
-    link: '/dashboard',
+    link: '/admin/dashboard',
   },
   {
     id: 2,
     title: 'Events',
-    link: '/events',
+    link: '/admin/events',
   },
   {
     id: 3,
     title: 'Transactions',
-    link: '/transactions',
+    link: '/admin/transactions',
   },
   {
     id: 4,
     title: 'Users',
-    link: '/users',
+    link: '/admin/users',
   },
 ];
 

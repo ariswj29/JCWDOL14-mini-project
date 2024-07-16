@@ -1,21 +1,8 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/helpers/prisma';
 import { compare, genSalt, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { config } from 'dotenv';
-
-const prisma = new PrismaClient();
-
-export const getAllUsers = async (req: Request, res: Response) => {
-  try {
-    const users = await prisma.user.findMany();
-    console.log(prisma);
-
-    res.status(200).json({ message: 'success', data: users });
-  } catch (error) {
-    res.status(400).json({ error: 'error' });
-  }
-};
 
 export const register = async (req: Request, res: Response) => {
   try {
