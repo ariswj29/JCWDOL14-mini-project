@@ -1,9 +1,23 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaSearch } from 'react-icons/fa';
 
 const SearchBar = () => {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [search, setSearch] = useState<string>('');
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await getAllEvents(events);
+        setEvents(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchEventList();
+  }, []);
   return (
     <div className="container mx-auto px-12 ">
       <div className="flex items-center justify-between">
