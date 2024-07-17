@@ -59,6 +59,7 @@ export async function getEvent(req: Request, res: Response) {
   try {
     const event = await prisma.event.findUnique({
       where: { id: Number(id) },
+      include: { category: true },
     });
 
     if (!event) throw new Error(`event with ${id} ID is not found`);
@@ -73,22 +74,22 @@ export async function getEvent(req: Request, res: Response) {
 }
 
 export async function updateEvent(req: Request, res: Response) {
-  // try {
-  const { id } = req.params;
-  const image = req.file?.filename;
+  try {
+    const { id } = req.params;
+    const image = req.file?.filename;
 
-  const event = await prisma.event.update({
-    where: { id: Number(id) },
-    data: { ...req.body, image },
-  });
+    const event = await prisma.event.update({
+      where: { id: Number(id) },
+      data: { ...req.body, image },
+    });
 
-  res.status(200).json({
-    message: 'success update event',
-    data: event,
-  });
-  // } catch (error) {
-  //   res.status(500).json({ error: 'Something went wrong' });
-  // }
+    res.status(200).json({
+      message: 'success update event',
+      data: event,
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Something went wrong' });
+  }
 }
 
 export async function deleteEvent(req: Request, res: Response) {

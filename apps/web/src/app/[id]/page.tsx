@@ -19,6 +19,10 @@ export default function EventDetails(context: any) {
     availableSeats: string;
     categoryId: string;
     userId: string;
+    category: {
+      id: number;
+      name: string;
+    };
   }
 
   const { params } = context;
@@ -48,23 +52,26 @@ export default function EventDetails(context: any) {
     locale: idLocale,
   });
   return (
-    <div className="container mx-auto p-4">
+    <div className="container max-w-screen-xl mx-auto items-center p-12">
       {event.image && (
         <div className="flex justify-center">
-          <Image
-            src={`http:localhost:8000/uploads/${event.image}`}
-            alt={event.name}
-            width={800}
-            height={400}
-            objectFit="cover"
-            className="mb-4"
-          />
+          <div className="relative w-full h-96 mb-4">
+            <Image
+              src={`http://localhost:8000/uploads/${event.image}`}
+              alt={event.name}
+              layout="fill"
+              objectFit="cover"
+              className="rounded-lg"
+            />
+          </div>
         </div>
       )}
       <h1 className="text-3xl font-bold mb-4">{event.name}</h1>
       <div className="flex justify-between items-center mb-4">
-        <span className="font-semibold">{event?.categoryId}</span>
-        <span className="text-xl">
+        <span className="font-semibold capitalize">
+          {event?.category?.name}
+        </span>
+        <span className="text-xl capitalize">
           {event?.location}, {event.time}, {formattedDate}
         </span>
       </div>
