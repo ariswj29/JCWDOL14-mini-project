@@ -2,13 +2,12 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { navbars, navbarsAuth } from '@/data/data';
 import { logoutProcess } from '@/api/auth';
 
 export const Header = (props: any) => {
-  const router = useRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -39,7 +38,7 @@ export const Header = (props: any) => {
       >
         <nav>
           <ul className="grid md:grid-cols-3 md:gap-0 gap-4">
-            {props.token === null
+            {props.token === undefined
               ? navbars.map((navbar) => (
                   <li key={navbar.id} className="text-center">
                     <Link
@@ -64,7 +63,7 @@ export const Header = (props: any) => {
                     </Link>
                   </li>
                 ))}
-            {props.token !== null ? (
+            {props.token !== undefined ? (
               <li className="text-center">
                 <Link
                   href="/#"

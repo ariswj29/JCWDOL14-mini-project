@@ -4,6 +4,7 @@ import { getProfileProcess } from '@/api/profile';
 import EditProfile from '@/components/profileSection/EditProfile';
 import Points from '@/components/profileSection/Points';
 import SidebarProfile from '@/components/profileSection/SidebarProfile';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function ProfilePage() {
@@ -30,18 +31,21 @@ export default function ProfilePage() {
     phoneNumber: '',
     address: '',
   });
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const user = localStorage.getItem('user');
+        if (!user) {
+          router.push('/login');
+        }
         if (user) {
           const { profileId } = JSON.parse(user);
           const response = await getProfileProcess(profileId);
 
           setProfile(response.data);
           setUser(response.data.user);
-          console.log('profile', response.data);
         } else {
           console.error('User not found');
         }

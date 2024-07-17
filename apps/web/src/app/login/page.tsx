@@ -6,6 +6,7 @@ import { loginProcess } from '@/api/auth';
 import { ShowMessage } from '@/components/ShowMessage';
 import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Cookies from 'js-cookie';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,9 +31,13 @@ export default function LoginPage() {
       setDataMessage(response);
 
       if (status === 'success') {
-        localStorage.setItem('token', token);
+        Cookies.set('token', token, { expires: 1, secure: true });
+        Cookies.set('role', data.roleId === 1 ? 'customer' : 'admin', {
+          expires: 1,
+          secure: true,
+        });
         localStorage.setItem('user', JSON.stringify(data));
-        localStorage.setItem('role', data.roleId == 1 ? 'customer' : 'admin');
+
         setTimeout(() => {
           setShowMessage(false);
 

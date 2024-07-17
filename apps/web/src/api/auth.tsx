@@ -1,6 +1,7 @@
 // 'use server';
 // import { cookies } from 'next/headers';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const base_url_api = 'http://localhost:8000/api';
 
@@ -26,7 +27,7 @@ export async function checkReferralCodeProcess(data: any) {
 }
 
 export async function logoutProcess() {
-  localStorage.removeItem('token');
+  Cookies.remove('token');
+  Cookies.remove('role');
   localStorage.removeItem('user');
-  localStorage.removeItem('role');
 }
