@@ -2,8 +2,10 @@ import { logoutProcess } from '@/api/auth';
 import { sidebars } from '@/data/data';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export const Sidebar = () => {
+  const pathname = usePathname();
   return (
     <aside className="bg-secondary w-64 h-screen fixed top-0 left-0 z-50">
       <div className="flex items-center justify-center h-14">
@@ -15,7 +17,10 @@ export const Sidebar = () => {
         <ul>
           {sidebars.map((sidebar) => (
             <li key={sidebar.id} className="p-2">
-              <Link className="hover:font-bold" href={sidebar.link}>
+              <Link
+                className={pathname === sidebar.link ? 'active' : 'nav-link'}
+                href={sidebar.link}
+              >
                 {sidebar.title}
               </Link>
             </li>

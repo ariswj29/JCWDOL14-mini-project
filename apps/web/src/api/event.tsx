@@ -17,3 +17,24 @@ export async function getEvent(id: Number) {
 
   return res.data;
 }
+
+export async function getSearchEvents(search: string) {
+  const url = base_url_api + '/events';
+  const res = await axios.get(url, {
+    params: {
+      search: search,
+    },
+  });
+  return res.data;
+}
+
+export async function getPagination(page: number, limit: number = 4) {
+  const url = `${base_url_api}/events`;
+  const res = await axios.get(url, {
+    params: {
+      page,
+      limit,
+    },
+  });
+  return res.data;
+}

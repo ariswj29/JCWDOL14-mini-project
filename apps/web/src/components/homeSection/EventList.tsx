@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { getAllEvents } from '@/api/event';
+import { getAllEvents, getPagination } from '@/api/event';
+import Pagination from './pagination';
 
 export default function EventList() {
   interface Event {
@@ -16,6 +17,8 @@ export default function EventList() {
   }
 
   const [events, setEvents] = useState<Event[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   const formatDate = (dateString: string) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -26,13 +29,21 @@ export default function EventList() {
     const fetchEventList = async () => {
       try {
         const response = await getAllEvents(events);
+        const data = await getPagination(page, 4);
+
         setEvents(response.data);
+        setTotalPages(data.pages);
+        console.log(data.pages, 'hahahha');
       } catch (error) {
         console.error(error);
       }
     };
     fetchEventList();
   }, []);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   return (
     <div className="container mx-auto px-8 py-12">
@@ -58,6 +69,11 @@ export default function EventList() {
           </div>
         ))}
       </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }

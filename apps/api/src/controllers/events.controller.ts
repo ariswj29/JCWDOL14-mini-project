@@ -108,3 +108,57 @@ export async function deleteEvent(req: Request, res: Response) {
     res.status(500).json({ error: 'Something went wrong' });
   }
 }
+
+// export const getSearchEvents = async (req: Request, res: Response) => {
+//   try {
+//     const { search } = req.query;
+//     const events = await prisma.event.findMany({
+//       where: {
+//         name: {
+//           contains: search as string,
+//         },
+//       },
+//     });
+//     res.json(events);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to fetch events' });
+//   }
+// };
+
+export const getSearchEvents = async (req: Request, res: Response) => {
+  try {
+    const { search } = req.query;
+    const events = await prisma.event.findMany();
+    const filteredEvents = events.filter((event) =>
+      event.name.toLowerCase().includes((search as string).toLowerCase()),
+    );
+    res.json(filteredEvents);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch events' });
+  }
+};
+
+export async function getPagination(req: Request, res: Response) {
+  try {
+    const { page = 1, limit = 4 } = req.query;
+
+    const currentPage = parseInt(page as string, 10);
+    const pageSize = parseInt(limit as string, 10);
+    const skip = (currentPage - 1) * pageSize;
+
+    const totalEvents = await prisma.event.count();
+    const events = await prisma.event.findMany({
+      skip,
+      take: pageSize,
+    });
+
+    res.json({
+      events,
+      total: totalEvents,
+      page: currentPage,
+      pages: Math.ceil(totalEvents / pageSize),
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+}
