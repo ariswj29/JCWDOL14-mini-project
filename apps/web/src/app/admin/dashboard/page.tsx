@@ -40,7 +40,7 @@ export default function DashboardPage() {
               <FaUsers className="text-4xl" />
               <div className="text-md ml-2">Total Users</div>
             </div>
-            <div className="text-xl font-bold">{data.users}</div>
+            <div className="text-xl font-bold">{data?.users}</div>
           </div>
         </div>
         <div className="p-8 border border-secondary rounded-lg">
@@ -49,7 +49,7 @@ export default function DashboardPage() {
               <FaMoneyBill className="text-4xl" />
               <div className="text-md ml-2">Total Transactions</div>
             </div>
-            <div className="text-xl font-bold">{data.transactions}</div>
+            <div className="text-xl font-bold">{data?.transactions}</div>
           </div>
         </div>
         <div className="p-8 border border-secondary rounded-lg">
@@ -58,7 +58,7 @@ export default function DashboardPage() {
               <FaTicketAlt className="text-4xl" />
               <div className="text-md ml-2">Total Events</div>
             </div>
-            <div className="text-xl font-bold">{data.events}</div>
+            <div className="text-xl font-bold">{data?.events}</div>
           </div>
         </div>
         <div className="p-8 border border-secondary rounded-lg">
@@ -67,7 +67,7 @@ export default function DashboardPage() {
               <FaTicketAlt className="text-4xl text-green-400" />
               <div className="text-md ml-2">Events for this year</div>
             </div>
-            <div className="text-xl font-bold">{data.eventsThisYear}</div>
+            <div className="text-xl font-bold">{data?.eventsThisYear}</div>
           </div>
         </div>
         <div className="p-8 border border-secondary rounded-lg">
@@ -76,7 +76,7 @@ export default function DashboardPage() {
               <FaTicketAlt className="text-4xl text-blue-400" />
               <div className="text-md ml-2">Events for this month</div>
             </div>
-            <div className="text-xl font-bold">{data.eventsThisMonth}</div>
+            <div className="text-xl font-bold">{data?.eventsThisMonth}</div>
           </div>
         </div>
         <div className="p-8 border border-secondary rounded-lg">
@@ -85,16 +85,16 @@ export default function DashboardPage() {
               <FaTicketAlt className="text-4xl text-yellow-400" />
               <div className="text-md ml-2">Events for today</div>
             </div>
-            <div className="text-xl font-bold">{data.eventsToday}</div>
+            <div className="text-xl font-bold">{data?.eventsToday}</div>
           </div>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 mt-8">
         <div className="p-8 border border-secondary rounded-lg">
-          <ChartBar data={data.arrayCountCategories} />
+          <ChartBar data={data?.arrayCountCategories} />
         </div>
         <div className="p-8 border border-secondary rounded-lg">
-          <ChartLine data={data.arrayCountAttandeePerMonth} />
+          <ChartLine data={data?.arrayCountAttandeePerMonth} />
         </div>
       </div>
     </div>
