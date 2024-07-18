@@ -3,6 +3,7 @@ import prisma from '@/helpers/prisma';
 import { compare, genSalt, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { config } from 'dotenv';
+import generateReferralCode from '@/helpers/generateReferralCode';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -38,6 +39,7 @@ export const register = async (req: Request, res: Response) => {
         referralCode: generateReferralCode(8),
         points: 0,
         discount: 0,
+        saldo: 0,
       },
     });
 
@@ -135,13 +137,3 @@ export const checkReferralCode = async (req: Request, res: Response) => {
     res.status(400).json({ error: 'error' });
   }
 };
-
-function generateReferralCode(length: number) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-}
