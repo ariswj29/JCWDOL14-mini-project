@@ -1,25 +1,14 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { getSearchEvents } from '@/api/event';
 import { useDebounce } from 'use-debounce';
 
-const SearchBar = () => {
-  const [events, setEvents] = useState<Event[]>([]);
+const SearchBar = (props: any) => {
   const [search, setSearch] = useState<string>('');
   const [debouncedSearch] = useDebounce(search, 1000);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const data = await getSearchEvents(debouncedSearch);
-        setEvents(data);
-      } catch (error) {
-        console.error('Failed to fetch events:', error);
-      }
-    };
-
-    fetchEvents();
+    props.setSearchEvents(debouncedSearch);
   }, [debouncedSearch]);
 
   return (
@@ -29,7 +18,6 @@ const SearchBar = () => {
           <input
             onChange={(e) => setSearch(e.target.value)}
             type="text"
-            value={search}
             placeholder="Search events"
             className="py-2 px-4 rounded-l-md border border-secondary w-full"
           />

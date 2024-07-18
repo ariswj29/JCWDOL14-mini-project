@@ -25,7 +25,7 @@ export const createEvents = async (req: Request, res: Response) => {
         name,
         image,
         isFree: Boolean(isFree),
-        price: isFree ? 0 : price,
+        price: Number(price),
         date: new Date(date),
         time,
         location,
@@ -43,14 +43,150 @@ export const createEvents = async (req: Request, res: Response) => {
 
 export const getAllEvents = async (req: Request, res: Response) => {
   try {
-    const events = await prisma.event.findMany();
+    const search = req.query.search;
+    const page = Number(req.query.page);
+    const limit = Number(req.query.limit);
+    const sort = req.query.sort as any;
+    const category = req.query.category as any;
+
+    const skip = page == 1 ? page - 1 : (page - 1) * limit;
+
+    let whereSearch: any = {};
+    let whereSearchWithoutPagination: any = {};
+
+    if (search) {
+      const where = {
+        name: {
+          contains: search,
+        },
+      };
+
+      whereSearch = {
+        where,
+      };
+
+      whereSearchWithoutPagination = {
+        where,
+      };
+    }
+
+    if (sort && sort == 'location') {
+      whereSearch = {
+        ...whereSearch,
+        orderBy: [
+          {
+            location: 'asc',
+          },
+        ],
+      };
+    }
+
+    if (sort && sort == 'lowerprice') {
+      whereSearch = {
+        ...whereSearch,
+        orderBy: [
+          {
+            price: 'asc',
+          },
+        ],
+      };
+    }
+
+    if (sort && sort == 'highestprice') {
+      whereSearch = {
+        ...whereSearch,
+        orderBy: [
+          {
+            price: 'desc',
+          },
+        ],
+      };
+    }
+
+    const today = new Date();
+
+    if (sort && sort === 'newest') {
+      whereSearch = {
+        ...whereSearch,
+        orderBy: [
+          {
+            date: 'asc',
+          },
+        ],
+        where: {
+          date: {
+            gte: today,
+          },
+        },
+      };
+    }
+
+    whereSearch = {
+      ...whereSearch,
+      skip,
+      take: limit,
+    };
+
+    if (category && category == 'music') {
+      whereSearch = {
+        ...whereSearch,
+        where: {
+          categoryId: 1,
+        },
+      };
+    }
+
+    if (category && category == 'holidays') {
+      whereSearch = {
+        ...whereSearch,
+        where: {
+          categoryId: 2,
+        },
+      };
+    }
+    if (category && category == 'football') {
+      whereSearch = {
+        ...whereSearch,
+        where: {
+          categoryId: 3,
+        },
+      };
+    }
+    if (category && category == 'seminar') {
+      whereSearch = {
+        ...whereSearch,
+        where: {
+          categoryId: 4,
+        },
+      };
+    }
+    if (category && category == 'film') {
+      whereSearch = {
+        ...whereSearch,
+        where: {
+          categoryId: 5,
+        },
+      };
+    }
+    if (category && category == 'automotive') {
+      whereSearch = {
+        ...whereSearch,
+        where: {
+          categoryId: 6,
+        },
+      };
+    }
+
+    const events = await prisma.event.findMany(whereSearch);
+    const eventCount = await prisma.event.count(whereSearchWithoutPagination);
 
     res.status(200).json({
       message: 'success',
       data: events,
+      total: Math.ceil(eventCount / limit),
     });
   } catch (error) {
-    res.status(500).json({ error: 'Something went wrong' });
+    res.status(500).json({ error: error });
   }
 };
 
@@ -77,10 +213,34 @@ export async function updateEvent(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const image = req.file?.filename;
+    const {
+      name,
+      isFree,
+      price,
+      date,
+      time,
+      location,
+      description,
+      availableSeats,
+      categoryId,
+      userId,
+    } = req.body;
 
     const event = await prisma.event.update({
       where: { id: Number(id) },
-      data: { ...req.body, image },
+      data: {
+        name,
+        image,
+        isFree: Boolean(isFree),
+        price: Number(price),
+        date: new Date(date),
+        time,
+        location,
+        description,
+        availableSeats: Number(availableSeats),
+        categoryId: Number(categoryId),
+        userId: Number(userId),
+      },
     });
 
     res.status(200).json({
@@ -103,60 +263,6 @@ export async function deleteEvent(req: Request, res: Response) {
     res.status(200).json({
       message: 'success delete event',
       data: event,
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Something went wrong' });
-  }
-}
-
-// export const getSearchEvents = async (req: Request, res: Response) => {
-//   try {
-//     const { search } = req.query;
-//     const events = await prisma.event.findMany({
-//       where: {
-//         name: {
-//           contains: search as string,
-//         },
-//       },
-//     });
-//     res.json(events);
-//   } catch (error) {
-//     res.status(500).json({ error: 'Failed to fetch events' });
-//   }
-// };
-
-export const getSearchEvents = async (req: Request, res: Response) => {
-  try {
-    const { search } = req.query;
-    const events = await prisma.event.findMany();
-    const filteredEvents = events.filter((event) =>
-      event.name.toLowerCase().includes((search as string).toLowerCase()),
-    );
-    res.json(filteredEvents);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch events' });
-  }
-};
-
-export async function getPagination(req: Request, res: Response) {
-  try {
-    const { page = 1, limit = 4 } = req.query;
-
-    const currentPage = parseInt(page as string, 10);
-    const pageSize = parseInt(limit as string, 10);
-    const skip = (currentPage - 1) * pageSize;
-
-    const totalEvents = await prisma.event.count();
-    const events = await prisma.event.findMany({
-      skip,
-      take: pageSize,
-    });
-
-    res.json({
-      events,
-      total: totalEvents,
-      page: currentPage,
-      pages: Math.ceil(totalEvents / pageSize),
     });
   } catch (error) {
     res.status(500).json({ error: 'Something went wrong' });

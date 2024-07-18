@@ -3,19 +3,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { getAllEvents, getPagination } from '@/api/event';
+import { getAllEvents } from '@/api/event';
 import Pagination from './pagination';
 
-export default function EventList() {
-  interface Event {
-    id: number;
-    name: string;
-    price: number | null;
-    date: string;
-    location: string;
-    image: string;
-  }
+interface Event {
+  id: number;
+  name: string;
+  price: number | null;
+  date: string;
+  location: string;
+  image: string;
+}
 
+export default function EventList(props: any) {
   const [events, setEvents] = useState<Event[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -25,24 +25,32 @@ export default function EventList() {
     return new Date(dateString).toLocaleDateString('id-ID', options);
   };
 
-  useEffect(() => {
-    const fetchEventList = async () => {
-      try {
-        const response = await getAllEvents(events);
-        const data = await getPagination(page, 4);
+  const fetchEventList = async (page = 1, limit = 4) => {
+    try {
+      const response = await getAllEvents(
+        props.searchEvents,
+        props.category,
+        props.sort,
+        page,
+        limit,
+      );
 
-        setEvents(response.data);
-        setTotalPages(data.pages);
-        console.log(data.pages, 'hahahha');
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      setEvents(response.data);
+      setTotalPages(response.total);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
     fetchEventList();
-  }, []);
+  }, [props.searchEvents, props.sort, props.category]);
 
   const handlePageChange = (newPage: number) => {
+    console.log(newPage);
+
     setPage(newPage);
+    fetchEventList(newPage);
   };
 
   return (

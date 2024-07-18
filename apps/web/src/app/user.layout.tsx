@@ -8,6 +8,7 @@ import { Footer } from '@/components/Footer';
 import { Navbar } from '@/components/Navbar';
 import { Sidebar } from '@/components/Sidebar';
 import Image from 'next/image';
+import Cookies from 'js-cookie';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,22 +18,27 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   const [isAdmin, setIsAdmin] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | undefined>(undefined);
   const [user, setUser] = useState<any>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const role = localStorage.getItem('role');
-      const token = localStorage.getItem('token');
+    const fetchUserData = () => {
+      const role = Cookies.get('role');
+      const token = Cookies.get('token');
       const users = localStorage.getItem('user');
-      setToken(token);
-      setUser(JSON.parse(users || '{}'));
-      if (role === 'admin') {
-        setIsAdmin(true);
+
+      if (token && users) {
+        setToken(token);
+        setUser(JSON.parse(users || '{}'));
+        if (role == 'admin') {
+          setIsAdmin(true);
+        }
       }
       setLoading(false);
-    }
+    };
+
+    fetchUserData();
   }, []);
 
   if (loading) {
