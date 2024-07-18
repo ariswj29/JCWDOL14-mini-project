@@ -4,35 +4,54 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { getAllEvents } from '@/api/event';
+import Pagination from './pagination';
 
-export default function EventList() {
-  interface Event {
-    id: number;
-    name: string;
-    price: number | null;
-    date: string;
-    location: string;
-    image: string;
-  }
+interface Event {
+  id: number;
+  name: string;
+  price: number | null;
+  date: string;
+  location: string;
+  image: string;
+}
 
+export default function EventList(props: any) {
   const [events, setEvents] = useState<Event[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
   const formatDate = (dateString: string) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(dateString).toLocaleDateString('id-ID', options);
   };
 
+  const fetchEventList = async (page = 1, limit = 4) => {
+    try {
+      const response = await getAllEvents(
+        props.searchEvents,
+        props.category,
+        props.sort,
+        page,
+        limit,
+      );
+
+      setEvents(response.data);
+      setTotalPages(response.total);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchEventList = async () => {
-      try {
-        const response = await getAllEvents(events);
-        setEvents(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     fetchEventList();
-  }, []);
+  }, [props.searchEvents, props.sort, props.category]);
+
+  const handlePageChange = (newPage: number) => {
+    console.log(newPage);
+
+    setPage(newPage);
+    fetchEventList(newPage);
+  };
 
   return (
     <div className="container mx-auto px-8 py-12">
@@ -58,6 +77,11 @@ export default function EventList() {
           </div>
         ))}
       </div>
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }

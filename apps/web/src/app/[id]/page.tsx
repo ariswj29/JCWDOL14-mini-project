@@ -80,7 +80,7 @@ export default function EventDetails(context: any) {
           <span className="text-xl font-bold pr-4">
             {event.price !== null ? `Rp. ${event.price}` : 'Free'}
           </span>
-          <span>{event.price !== null ? 'F̶r̶e̶e̶' : 'Free'}</span>
+          <span>{event.price !== null ? 'Free' : 'F̶r̶e̶e̶'}</span>
         </div>
         <div className="flex justify-normal bg-secondary p-2 rounded-md">
           <Image src={'/seat.png'} alt={'seat'} width={20} height={20} />
