@@ -1,6 +1,7 @@
 'use client';
 
 import { getUsersProcess } from '@/api/user';
+import ConfirmModal from '@/components/ConfirmModal';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FaPen, FaPlus, FaSearch, FaTrash } from 'react-icons/fa';
@@ -20,6 +21,8 @@ export default function UsersPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(page);
   const [loading, setLoading] = useState(false);
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [id, setId] = useState<number>(0);
 
   useEffect(() => {
     fetchData();
@@ -29,8 +32,8 @@ export default function UsersPage() {
     setLoading(true);
     try {
       const res = await getUsersProcess(search, page);
-      setUsers(res.data.data);
-      setTotalPages(res.data.pagination.totalPages);
+      setUsers(res.data);
+      setTotalPages(res.pagination.totalPages);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -78,7 +81,7 @@ export default function UsersPage() {
             </button>
           </div>
           <Link
-            href={'/add'}
+            href={'/admin/users/add'}
             className="bg-green-500 hover:bg-green-600 text-primary p-2 rounded"
           >
             <span className="flex items-center">
@@ -117,10 +120,18 @@ export default function UsersPage() {
                     {user.roleId == 1 ? 'Event Organizer' : 'Customer'}
                   </td>
                   <td className="border p-2">
-                    <button className="bg-yellow-500 hover:bg-yellow-600 text-primary p-1 rounded">
-                      <FaPen />
-                    </button>
-                    <button className="bg-red-500 hover:bg-red-600 text-primary p-1 rounded ml-2">
+                    <Link href={`/admin/users/${user.id}`}>
+                      <button className="bg-yellow-500 hover:bg-yellow-600 text-primary p-1 rounded">
+                        <FaPen />
+                      </button>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setConfirmationModal(true);
+                        setId(user.id);
+                      }}
+                      className="bg-red-500 hover:bg-red-600 text-primary p-1 rounded ml-2"
+                    >
                       <FaTrash />
                     </button>
                   </td>
@@ -145,6 +156,13 @@ export default function UsersPage() {
         >
           Next
         </button>
+        {confirmationModal === true ? (
+          <ConfirmModal
+            id={id}
+            setModal={setConfirmationModal}
+            title="Delete"
+          />
+        ) : null}
       </div>
     </div>
   );
