@@ -3,7 +3,13 @@ import prisma from '@/helpers/prisma';
 
 export const getDashboard = async (req: Request, res: Response) => {
   try {
-    const users = await prisma.user.count();
+    const users = await prisma.user.count({
+      where: {
+        roleId: {
+          not: 2,
+        },
+      },
+    });
     const transactions = await prisma.transaction.count();
     const events = await prisma.event.count();
     const eventsThisYear = await prisma.event.count({
@@ -49,12 +55,13 @@ export const getDashboard = async (req: Request, res: Response) => {
     );
     const attandeePerMonth: { month: string; count: BigInt }[] =
       await prisma.$queryRaw`
-    SELECT 
-      DATE_FORMAT(createdAt, '%Y-%m') as month, 
-      COUNT(*) as count 
-    FROM users 
-    GROUP BY month;
-  `;
+        SELECT 
+          DATE_FORMAT(createdAt, '%Y-%m') as month, 
+          COUNT(*) as count 
+        FROM users 
+        WHERE roleId = 1
+        GROUP BY month;
+      `;
     const arrayCountAttandeePerMonth = attandeePerMonth.map(
       (item: { month: string; count: BigInt }) => Number(item.count),
     );
