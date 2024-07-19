@@ -2,35 +2,31 @@
 import React, { useState } from 'react';
 
 interface SortButtonsProps {
-  onSortChange: (sortConfig: { key: string; direction: string }) => void;
+  onSortChange: (sortConfig: string) => void;
 }
 
 const SortButtons: React.FC<SortButtonsProps> = ({ onSortChange }) => {
-  const [sortConfig, setSortConfig] = useState({ key: '', direction: '' });
+  // const [sortConfig, setSortConfig] = useState<string>('');
+  let sort = '';
 
   const handleSort = (sortBy: string) => {
-    let direction = 'asc';
     switch (sortBy) {
       case 'lowerPrice':
-        setSortConfig({ key: 'price', direction: 'asc' });
-        direction = 'asc';
+        sort = 'lowerprice';
         break;
       case 'highestPrice':
-        setSortConfig({ key: 'price', direction: 'desc' });
-        direction = 'desc';
+        sort = 'highestprice';
         break;
       case 'location':
-        setSortConfig({ key: 'location', direction: 'asc' });
-        direction = 'asc';
+        sort = 'location';
         break;
       case 'newest':
-        setSortConfig({ key: 'date', direction: 'desc' });
-        direction = 'desc';
+        sort = 'newest';
         break;
       default:
         break;
     }
-    onSortChange({ key: sortBy, direction });
+    onSortChange(sort);
   };
 
   return (
@@ -57,7 +53,7 @@ const SortButtons: React.FC<SortButtonsProps> = ({ onSortChange }) => {
         className="py-1 px-2 bg-secondary hover:font-bold  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-900 text-xs w-28"
         onClick={() => handleSort('newest')}
       >
-        Newest
+        Nearest Date
       </button>
     </div>
   );
