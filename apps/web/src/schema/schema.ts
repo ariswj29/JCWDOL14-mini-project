@@ -17,3 +17,22 @@ export const usersSchema = yup.object().shape({
   address: yup.string().required('Address is required'),
   phoneNumber: yup.string().required('Phone Number is required'),
 });
+
+export const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Email must be a valid email')
+    .required('Email is required'),
+  password: yup.string().required('Password is required'),
+});
+
+export const orderTicketSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  email: yup
+    .string()
+    .email('Email must be a valid email')
+    .required('Email is required'),
+  phoneNumber: yup.string().required('Phone Number is required'),
+  address: yup.string().required('Address is required'),
+});
