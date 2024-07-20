@@ -24,9 +24,43 @@ export async function getAllEvents(
 
   return res.data;
 }
-export async function getEvent(id: Number) {
+export async function getEvent(id: number) {
   const url = base_url_api + '/events/' + id;
   const res = await axios.get(url);
+
+  return res.data;
+}
+
+export async function getAllTableEvents(search: string, page: number) {
+  const url = base_url_api + '/events/table';
+  const config = {
+    params: {
+      search,
+      page,
+    },
+  };
+  const res = await axios.get(url, config);
+
+  return res.data;
+}
+
+export async function createEvents(data: any) {
+  const url = base_url_api + '/events';
+  const res = await axios.post(url, data);
+
+  return res.data;
+}
+
+export async function updateEvent(id: string, data: any) {
+  const url = base_url_api + '/events/' + id;
+  const res = await axios.put(url, data);
+
+  return res.data;
+}
+
+export async function deleteEvent(id: number) {
+  const url = base_url_api + '/events/' + id;
+  const res = await axios.delete(url);
 
   return res.data;
 }

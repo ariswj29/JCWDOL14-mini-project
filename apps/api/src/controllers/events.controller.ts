@@ -268,3 +268,51 @@ export async function deleteEvent(req: Request, res: Response) {
     res.status(500).json({ error: 'Something went wrong' });
   }
 }
+
+export const getAllTableEvent = async (req: Request, res: Response) => {
+  try {
+    const { search, page, limit = '10' } = req.query;
+
+    const pageNumber = parseInt(page as string, 10);
+    const limitNumber = parseInt(limit as string, 10);
+
+    const events = await prisma.event.findMany({
+      where: {
+        name: {
+          contains: search as string,
+        },
+      },
+      select: {
+        id: true,
+        image: true,
+        name: true,
+        categoryId: true,
+        date: true,
+        price: true,
+      },
+      skip: (pageNumber - 1) * limitNumber,
+      take: limitNumber,
+    });
+
+    const eventsWithIndex = events.map((event, index) => ({
+      ...event,
+      no: (pageNumber - 1) * limitNumber + index + 1,
+    }));
+
+    const totalEvents = await prisma.event.count({ where: {} });
+    const totalPages = Math.ceil(totalEvents / limitNumber);
+
+    res.status(200).json({
+      message: 'success',
+      data: eventsWithIndex,
+      pagination: {
+        totalItems: totalEvents,
+        totalPages,
+        currentPage: pageNumber,
+        pageSize: limitNumber,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({ error: 'error' });
+  }
+};
