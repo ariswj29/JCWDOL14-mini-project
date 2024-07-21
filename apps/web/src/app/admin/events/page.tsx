@@ -85,7 +85,7 @@ export default function EventTable() {
             </button>
           </div>
           <Link
-            href={'/admin/users/add'}
+            href={'/admin/events/add'}
             className="bg-green-500 hover:bg-green-600 text-primary p-2 rounded"
           >
             <span className="flex items-center">

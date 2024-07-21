@@ -17,3 +17,58 @@ export const usersSchema = yup.object().shape({
   address: yup.string().required('Address is required'),
   phoneNumber: yup.string().required('Phone Number is required'),
 });
+
+export const eventSchema = yup.object().shape({
+  name: yup
+    .string()
+    .required('Name is required')
+    .max(50, 'Name must be at most 100 characters long'),
+
+  image: yup
+    .mixed()
+    .required('Image is required')
+    .test('type', 'Unsupported File Format', (value: any) => {
+      console.log(value, 'valueeee'); // Tambahkan log ini untuk debugging
+      return value && value[0].type === 'image/png';
+    }),
+
+  isFree: yup.boolean().required('isFree is required'),
+
+  price: yup.number().when('isFree', {
+    is: false,
+    then: (schema) =>
+      schema
+        .required('Price is required')
+        .min(1, 'Price must be greater than 0'),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+
+  date: yup
+    .date()
+    .required('Date is required')
+    .min(new Date(), 'Date must be in the future'),
+
+  time: yup
+    .string()
+    .required('Time is required')
+    .matches(/^([01]\d|2[0-3]).([0-5]\d)$/, 'Time must be in the format HH.mm'),
+
+  location: yup
+    .string()
+    .required('Location is required')
+    .max(100, 'Location must be at most 255 characters long'),
+
+  description: yup
+    .string()
+    .required('Description is required')
+    .max(5000, 'Description must be at most 5000 characters long'),
+
+  availableSeats: yup
+    .string()
+    .required('Available seats are required')
+    .min(1, 'There must be at least one available seat'),
+
+  categoryId: yup.string().required('Category is required'),
+
+  userId: yup.string().required('User ID is required'),
+});
