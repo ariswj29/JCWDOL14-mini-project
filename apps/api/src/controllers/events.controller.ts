@@ -35,7 +35,13 @@ export const createEvents = async (req: Request, res: Response) => {
         userId: Number(userId),
       },
     });
-    res.status(201).json({ message: 'Success create event', data: event });
+    res
+      .status(201)
+      .json({
+        status: 'success',
+        message: 'Success create event',
+        data: event,
+      });
   } catch (error) {
     res.status(500).json({ error: 'Something went wrong' });
   }
@@ -181,7 +187,8 @@ export const getAllEvents = async (req: Request, res: Response) => {
     const eventCount = await prisma.event.count(whereSearchWithoutPagination);
 
     res.status(200).json({
-      message: 'success',
+      status: 'success',
+      message: 'success show all events',
       data: events,
       total: Math.ceil(eventCount / limit),
     });
@@ -201,7 +208,8 @@ export async function getEvent(req: Request, res: Response) {
     if (!event) throw new Error(`event with ${id} ID is not found`);
 
     res.status(200).json({
-      message: 'success',
+      status: 'success',
+      message: 'success show event',
       data: event,
     });
   } catch (error) {
@@ -244,6 +252,7 @@ export async function updateEvent(req: Request, res: Response) {
     });
 
     res.status(200).json({
+      status: 'success',
       message: 'success update event',
       data: event,
     });
@@ -261,6 +270,7 @@ export async function deleteEvent(req: Request, res: Response) {
     });
 
     res.status(200).json({
+      status: 'success',
       message: 'success delete event',
       data: event,
     });
@@ -282,14 +292,7 @@ export const getAllTableEvent = async (req: Request, res: Response) => {
           contains: search as string,
         },
       },
-      select: {
-        id: true,
-        image: true,
-        name: true,
-        categoryId: true,
-        date: true,
-        price: true,
-      },
+      include: { category: true },
       skip: (pageNumber - 1) * limitNumber,
       take: limitNumber,
     });
@@ -303,7 +306,8 @@ export const getAllTableEvent = async (req: Request, res: Response) => {
     const totalPages = Math.ceil(totalEvents / limitNumber);
 
     res.status(200).json({
-      message: 'success',
+      status: 'success',
+      message: 'success show all events',
       data: eventsWithIndex,
       pagination: {
         totalItems: totalEvents,

@@ -141,6 +141,7 @@ const FormEvents = () => {
           <label className="label">Date</label>
           <div className="">
             <input
+              type="date"
               className="w-full border p-2"
               {...register('date')}
               placeholder="date"
