@@ -24,13 +24,10 @@ export const eventSchema = yup.object().shape({
     .required('Name is required')
     .max(50, 'Name must be at most 100 characters long'),
 
-  image: yup
-    .mixed()
-    .required('Image is required')
-    .test('type', 'Unsupported File Format', (value: any) => {
-      console.log(value, 'valueeee'); // Tambahkan log ini untuk debugging
-      return value && value[0].type === 'image/png';
-    }),
+  image: yup.mixed().test('fileSize', 'The file is too large', (value: any) => {
+    if (!value || !value.length) return true;
+    return value[0].size <= 2000000;
+  }),
 
   isFree: yup.boolean().required('isFree is required'),
 
@@ -71,4 +68,23 @@ export const eventSchema = yup.object().shape({
   categoryId: yup.string().required('Category is required'),
 
   userId: yup.string().required('User ID is required'),
+});
+
+export const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Email must be a valid email')
+    .required('Email is required'),
+  password: yup.string().required('Password is required'),
+});
+
+export const orderTicketSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  email: yup
+    .string()
+    .email('Email must be a valid email')
+    .required('Email is required'),
+  phoneNumber: yup.string().required('Phone Number is required'),
+  address: yup.string().required('Address is required'),
 });
