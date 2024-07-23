@@ -17,6 +17,9 @@ interface Event {
   categoryId: number;
   date: string;
   price: number | null;
+  category: {
+    name: string;
+  };
 }
 
 export default function EventTable() {
@@ -27,6 +30,7 @@ export default function EventTable() {
   const [loading, setLoading] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [id, setId] = useState<number>(0);
+  console.log(id, 'id');
 
   useEffect(() => {
     fetchData();
@@ -85,7 +89,7 @@ export default function EventTable() {
             </button>
           </div>
           <Link
-            href={'/admin/users/add'}
+            href={'/admin/events/add'}
             className="bg-green-500 hover:bg-green-600 text-primary p-2 rounded"
           >
             <span className="flex items-center">
@@ -134,8 +138,10 @@ export default function EventTable() {
                         height={200}
                       />
                     </td>
-                    <td className="border p-2">{event.name}</td>
-                    <td className="border p-2">{event.categoryId}</td>
+                    <td className="border p-2 capitalize">{event.name}</td>
+                    <td className="border p-2 capitalize">
+                      {event.category.name}
+                    </td>
                     <td className="border p-2">{formattedDate}</td>
                     <td className="border p-2">
                       {event.price !== null ? `Rp.${event.price}` : 'free'}
@@ -180,7 +186,12 @@ export default function EventTable() {
         </button>
       </div>
       {confirmationModal && (
-        <ConfirmModal id={id} setModal={setConfirmationModal} title="Delete" />
+        <ConfirmModal
+          id={id}
+          setModal={setConfirmationModal}
+          title="Delete"
+          for="event"
+        />
       )}
     </div>
   );

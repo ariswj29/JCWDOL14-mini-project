@@ -24,7 +24,7 @@ export async function getAllEvents(
 
   return res.data;
 }
-export async function getEvent(id: number) {
+export async function getEvent(id: string) {
   const url = base_url_api + '/events/' + id;
   const res = await axios.get(url);
 

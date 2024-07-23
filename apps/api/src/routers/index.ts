@@ -4,6 +4,8 @@ import event from './events.router';
 import profile from './profile.router';
 import user from './user.router';
 import dashboard from './dashboard.router';
+import promotion from './promotion.router';
+import transaction from './transaction.router';
 
 const router = express.Router();
 
@@ -12,5 +14,7 @@ router.use('/api/events', event);
 router.use('/api/profile', profile);
 router.use('/api/users', user);
 router.use('/api/dashboard', dashboard);
+router.use('/api/promotions', promotion);
+router.use('/api/transactions', transaction);
 
 export default router;
