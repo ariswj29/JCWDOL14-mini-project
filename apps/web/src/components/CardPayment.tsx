@@ -41,12 +41,15 @@ export default function CardPayment({ profile, event, formattedDate }: any) {
           <div className="grid border-2 border-gray-200 rounded-md items-center text-center">
             <h4 className="text-base font-bold">Your Saldo</h4>
             <h4
-              className={`text-base font-bold ${profile.saldo <= event.price ? 'text-red-500' : null}`}
+              className={`text-base font-bold ${profile.saldo <= totalPrice(event.price, profile.discount, profile.points) ? 'text-red-500' : null}`}
             >
               Rp. {profile.saldo}
             </h4>
             <span className="text-xs text-red-500">
-              {profile.saldo <= event.price ? ' (Saldo is not enough)' : null}
+              {profile.saldo <=
+              totalPrice(event.price, profile.discount, profile.points)
+                ? ' (Saldo is not enough)'
+                : null}
             </span>
           </div>
         </div>
