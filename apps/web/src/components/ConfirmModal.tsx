@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ShowMessage } from './ShowMessage';
 import { deleteUserProcess } from '@/api/user';
 import { deleteEvent } from '@/api/event';
+import { deletePromotion } from '@/api/promotion';
 
 export default function ConfirmModal(props: {
   id: number;
@@ -56,6 +57,26 @@ export default function ConfirmModal(props: {
     }
   };
 
+  const handleDeletePromotion = async () => {
+    try {
+      const response = await deletePromotion(props.id);
+
+      const { status } = response;
+
+      setDataMessage(response);
+
+      if (status == 'success') {
+        setShowMessage(true);
+        setTimeout(() => {
+          setShowMessage(false);
+          window.location.reload();
+        }, 3000);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {showMessage === true ? (
@@ -77,7 +98,15 @@ export default function ConfirmModal(props: {
         <div className="grid grid-cols-2 gap-2 items-center text-center">
           <a
             className="p-2 my-4 border bg-secondary rounded-md cursor-pointer hover:font-bold"
-            onClick={props.for == 'event' ? handleDeleteEvent : handleDelete}
+            onClick={() => {
+              if (props.for === 'event') {
+                handleDeleteEvent();
+              } else if (props.for === 'promotion') {
+                handleDeletePromotion();
+              } else {
+                handleDelete();
+              }
+            }}
           >
             Yes
           </a>
