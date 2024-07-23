@@ -35,13 +35,11 @@ export const createEvents = async (req: Request, res: Response) => {
         userId: Number(userId),
       },
     });
-    res
-      .status(201)
-      .json({
-        status: 'success',
-        message: 'Success create event',
-        data: event,
-      });
+    res.status(201).json({
+      status: 'success',
+      message: 'Success create event',
+      data: event,
+    });
   } catch (error) {
     res.status(500).json({ error: 'Something went wrong' });
   }
@@ -307,7 +305,7 @@ export const getAllTableEvent = async (req: Request, res: Response) => {
 
     res.status(200).json({
       status: 'success',
-      message: 'success show all events',
+      message: 'success get all events',
       data: eventsWithIndex,
       pagination: {
         totalItems: totalEvents,
