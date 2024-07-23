@@ -28,7 +28,7 @@ export const ticketTransaction = async (req: Request, res: Response) => {
     if (profile === null) {
       return res.status(404).json({
         status: 'error',
-        message: 'User not found',
+        message: 'User not found!',
       });
     }
 
