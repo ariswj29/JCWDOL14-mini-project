@@ -46,14 +46,22 @@ export async function getAllTableEvents(search: string, page: number) {
 
 export async function createEvents(data: any) {
   const url = base_url_api + '/events';
-  const res = await axios.post(url, data);
+  const res = await axios.post(url, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 
   return res.data;
 }
 
-export async function updateEvent(id: string, data: any) {
+export async function updateEvent(id: string, data: FormData) {
   const url = base_url_api + '/events/' + id;
-  const res = await axios.put(url, data);
+  const res = await axios.put(url, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 
   return res.data;
 }
