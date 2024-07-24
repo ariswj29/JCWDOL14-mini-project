@@ -53,7 +53,7 @@ const Category: React.FC<SortButtonsProps> = ({ onSortChange }) => {
   };
 
   return (
-    <div className="grid grid-cols-3 md:grid-cols-6 justify-around items-center px-8 py-20">
+    <div className="grid grid-cols-3 md:grid-cols-6 justify-around items-center px-8 py-12">
       {categories.map((category, index) => (
         <div key={index} className="hover:font-semibold">
           <div

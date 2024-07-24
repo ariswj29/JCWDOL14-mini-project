@@ -18,10 +18,10 @@ const SearchBar = (props: any) => {
           <input
             onChange={(e) => setSearch(e.target.value)}
             type="text"
-            placeholder="Search events"
+            placeholder="Search events or location"
             className="py-2 px-4 rounded-l-md border border-secondary w-full"
           />
-          <button className="bg-secondary text-white py-2 px-4 border-2 border-secondary rounded-r-md hover:font-bold focus:ring-2 focus:ring-blue-900 focus:ring-opacity-50">
+          <button className="bg-secondary text-white h-[2.7rem] py-2 px-4 border-2 border-secondary rounded-r-md hover:font-bold focus:ring-2 focus:ring-blue-900 focus:ring-opacity-50">
             <span>
               <FaSearch size={20} />
             </span>

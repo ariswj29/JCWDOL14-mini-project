@@ -34,7 +34,13 @@ const FormEvents = () => {
     if (eventId != 'add') {
       getEvent(eventId || '')
         .then((data) => {
-          reset(data.data);
+          const eventData = data.data;
+          if (eventData.date) {
+            eventData.date = new Date(eventData.date)
+              .toISOString()
+              .split('T')[0];
+          }
+          reset(eventData);
         })
         .catch((error) => {
           console.error('Error fetching user:', error);
@@ -50,16 +56,26 @@ const FormEvents = () => {
 
   const formSubmit = async (formData: any) => {
     try {
-      if (eventId != 'add') {
-        const response = await updateEvent(eventId || '', formData);
-        setShowMessage(true);
-        setDataMessage(response);
-      } else {
-        const response = await createEvents(formData);
-        console.log('Create Response:', response);
-        setShowMessage(true);
-        setDataMessage(response);
+      const data = new FormData();
+
+      for (const key in formData) {
+        if (key === 'image' && formData[key].length > 0) {
+          data.append(key, formData[key][0]);
+        } else {
+          data.append(key, formData[key]);
+        }
       }
+
+      let response;
+      if (eventId != 'add') {
+        response = await updateEvent(eventId || '', data);
+      } else {
+        response = await createEvents(data);
+      }
+
+      setShowMessage(true);
+      setDataMessage(response);
+
       setTimeout(() => {
         setShowMessage(false);
         router.push('/admin/events');
@@ -144,7 +160,6 @@ const FormEvents = () => {
               type="date"
               className="w-full border p-2"
               {...register('date')}
-              placeholder="date"
             />
             {errors.date && (
               <p className="text-sm text-red-500">{errors.date.message}</p>
@@ -155,7 +170,7 @@ const FormEvents = () => {
           <div className="">
             <input
               className="w-full border p-2"
-              type="string"
+              type="text"
               {...register('time')}
               placeholder="time"
             />
@@ -181,6 +196,7 @@ const FormEvents = () => {
             <input
               className="w-full border p-2"
               {...register('description')}
+              type="text"
               placeholder="description"
             />
             {errors.description && (

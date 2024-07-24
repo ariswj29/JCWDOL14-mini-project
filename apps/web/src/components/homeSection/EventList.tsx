@@ -67,8 +67,9 @@ export default function EventList(props: any) {
                 <Image
                   src={`http://localhost:8000/uploads/${event.image}`}
                   alt={event.name}
-                  width={300}
-                  height={200}
+                  className="rounded-lg h-48 w-full object-cover"
+                  width={500}
+                  height={500}
                 />
                 <h2 className="text-xl font-semibold pt-4">{event.name}</h2>
                 <p className="text-gray-600">{formattedDate}</p>

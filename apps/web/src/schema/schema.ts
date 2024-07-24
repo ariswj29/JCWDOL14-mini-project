@@ -24,10 +24,16 @@ export const eventSchema = yup.object().shape({
     .required('Name is required')
     .max(50, 'Name must be at most 100 characters long'),
 
-  image: yup.mixed().test('fileSize', 'The file is too large', (value: any) => {
-    if (!value || !value.length) return true;
-    return value[0].size <= 2000000;
-  }),
+  image: yup
+    .mixed()
+    .test('fileSize', 'The file is too large', (value: any) => {
+      if (!value || !value.length) return true;
+      return value[0].size <= 2000000;
+    })
+    .test('fileType', 'Unsupported File Format', (value: any) => {
+      if (!value || !value.length) return true;
+      return ['image/jpeg', 'image/png', 'image/gif'].includes(value[0].type);
+    }),
 
   isFree: yup.boolean().required('isFree is required'),
 

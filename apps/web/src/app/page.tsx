@@ -20,10 +20,11 @@ const Home: React.FC = () => {
   return (
     <main className="max-w-screen-xl mx-auto items-center">
       <Category onSortChange={handleSortCategory} />
-      <div className="container mx-auto mt-8 px-4">
-        <div className="flex flex-col md:flex-row items-center justify-between mb-4  space-y-4 md:space-y-0 md:space-x-4 w-full md:w-auto h-full">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4 w-full md:w-auto h-full">
           <SearchBar setSearchEvents={setSearchEvents} />
-          <div className="w-full md:w-auto h-full">
+          <div className="w-full h-full md:w-auto text-center">
+            <span className="text-sm font-semibold">Sort by:</span>
             <SortButtons onSortChange={handleSortChange} />
           </div>
         </div>

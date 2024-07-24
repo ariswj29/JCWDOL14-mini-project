@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { Prisma } from '@prisma/client';
+import prisma from '@/helpers/prisma';
 
 export const createEvents = async (req: Request, res: Response) => {
   const {
@@ -59,10 +58,13 @@ export const getAllEvents = async (req: Request, res: Response) => {
     let whereSearchWithoutPagination: any = {};
 
     if (search) {
-      const where = {
-        name: {
-          contains: search,
-        },
+      const where: Prisma.EventWhereInput = {
+        ...(search && {
+          OR: [
+            { name: { contains: search as string } },
+            { location: { contains: search as string } },
+          ],
+        }),
       };
 
       whereSearch = {
@@ -219,6 +221,7 @@ export async function updateEvent(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const image = req.file?.filename;
+
     const {
       name,
       isFree,
