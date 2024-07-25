@@ -132,52 +132,98 @@ export const getAllEvents = async (req: Request, res: Response) => {
     };
 
     if (category && category == 'music') {
+      const where = {
+        categoryId: 1,
+      };
+
       whereSearch = {
         ...whereSearch,
-        where: {
-          categoryId: 1,
-        },
+        where,
+      };
+
+      whereSearchWithoutPagination = {
+        ...whereSearchWithoutPagination,
+        where,
       };
     }
 
     if (category && category == 'holidays') {
+      const where = {
+        categoryId: 2,
+      };
+
       whereSearch = {
         ...whereSearch,
-        where: {
-          categoryId: 2,
-        },
+        where,
+      };
+
+      whereSearchWithoutPagination = {
+        ...whereSearchWithoutPagination,
+        where,
       };
     }
+
     if (category && category == 'football') {
+      const where = {
+        categoryId: 3,
+      };
+
       whereSearch = {
         ...whereSearch,
-        where: {
-          categoryId: 3,
-        },
+        where,
+      };
+
+      whereSearchWithoutPagination = {
+        ...whereSearchWithoutPagination,
+        where,
       };
     }
+
     if (category && category == 'seminar') {
+      const where = {
+        categoryId: 4,
+      };
+
       whereSearch = {
         ...whereSearch,
-        where: {
-          categoryId: 4,
-        },
+        where,
+      };
+
+      whereSearchWithoutPagination = {
+        ...whereSearchWithoutPagination,
+        where,
       };
     }
+
     if (category && category == 'film') {
+      const where = {
+        categoryId: 5,
+      };
+
       whereSearch = {
         ...whereSearch,
-        where: {
-          categoryId: 5,
-        },
+        where,
+      };
+
+      whereSearchWithoutPagination = {
+        ...whereSearchWithoutPagination,
+        where,
       };
     }
+
     if (category && category == 'automotive') {
+      const where = {
+        categoryId: 6,
+      };
+
       whereSearch = {
         ...whereSearch,
-        where: {
-          categoryId: 6,
-        },
+        where,
+      };
+
+      whereSearchWithoutPagination = {
+        ...whereSearchWithoutPagination,
+        where,
       };
     }
 
