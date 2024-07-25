@@ -6,6 +6,7 @@ import user from './user.router';
 import dashboard from './dashboard.router';
 import promotion from './promotion.router';
 import transaction from './transaction.router';
+import review from './review.router';
 
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.use('/api/users', user);
 router.use('/api/dashboard', dashboard);
 router.use('/api/promotions', promotion);
 router.use('/api/transactions', transaction);
+router.use('/api/review', review);
 
 export default router;
