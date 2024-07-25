@@ -202,7 +202,7 @@ export async function getEvent(req: Request, res: Response) {
   try {
     const event = await prisma.event.findUnique({
       where: { id: Number(id) },
-      include: { category: true },
+      include: { category: true, promotion: true },
     });
 
     if (!event) throw new Error(`event with ${id} ID is not found`);

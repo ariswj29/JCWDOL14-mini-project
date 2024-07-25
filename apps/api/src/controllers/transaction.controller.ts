@@ -4,7 +4,16 @@ import getNextQN from '@/helpers/generateQN';
 
 export const ticketTransaction = async (req: Request, res: Response) => {
   try {
-    const { eventId, userId } = req.body;
+    const {
+      eventId,
+      userId,
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      address,
+      totalTransaction,
+    } = req.body;
 
     const event = await prisma.event.findUnique({
       where: {
@@ -55,11 +64,24 @@ export const ticketTransaction = async (req: Request, res: Response) => {
       });
     }
 
+    const user = await prisma.user.update({
+      where: {
+        id: Number(userId),
+      },
+      data: {
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        address,
+      },
+    });
+
     const transaction = await prisma.transaction.create({
       data: {
         eventId: Number(eventId),
         userId: Number(userId),
-        price: Number(event?.price),
+        price: Number(totalTransaction),
         date: new Date(),
       },
     });
