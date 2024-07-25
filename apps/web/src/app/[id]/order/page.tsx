@@ -11,6 +11,8 @@ import CardPayment from '@/components/CardPayment';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { orderTicketSchema } from '@/schema/schema';
+import { totalPrice } from '@/helper/helper';
+import { buyTransactionProcess } from '@/api/transaction';
 
 export default function OrderPage(context: any) {
   const { params } = context;
@@ -30,6 +32,7 @@ export default function OrderPage(context: any) {
     address: '',
   });
   const [event, setEvent] = useState<Event | null>(null);
+  const [totalTransaction, setTotalTransaction] = useState(0);
 
   const {
     register,
@@ -71,8 +74,32 @@ export default function OrderPage(context: any) {
     }
   }, [params?.id, router]);
 
+  const handleTotalTransactionChange = (total: number) => {
+    setTotalTransaction(total);
+  };
+
   const formSubmit = async (formData: any) => {
-    console.log(formData);
+    const user = localStorage.getItem('user');
+    if (!user) {
+      alert('Please login first to continue the order');
+      router.push('/login');
+    }
+    if (user) {
+      const { profileId } = JSON.parse(user);
+      const response = await buyTransactionProcess({
+        userId: profileId,
+        eventId: event?.id,
+        totalTransaction,
+        ...formData,
+      });
+      console.log('response', response);
+      if (response.status === 'success') {
+        alert('Success buy ticket');
+        router.push(`/${event?.id}/review`);
+      } else {
+        alert('Failed to buy ticket');
+      }
+    }
   };
 
   if (!event) {
@@ -82,16 +109,17 @@ export default function OrderPage(context: any) {
   const formattedDate = format(new Date(event.date), 'd MMMM yyyy', {
     locale: idLocale,
   });
+
   return (
     <div className="container max-w-screen-xl mx-auto items-center p-12">
-      <div className="grid grid-cols-3 gap-4">
-        <div className="col-span-2">
+      <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
+        <div className="md:col-span-2 order-2 md:order-1">
           <div className="bg-white shadow-md rounded-lg p-6">
             <h3 className="text-2xl font-bold text-gray-800">
               Ordered Details
             </h3>
             <form className="mt-4" onSubmit={handleSubmit(formSubmit)}>
-              <div className="grid gap-4">
+              <div className="md:grid gap-4">
                 <div>
                   <label htmlFor="firstName" className="text-sm font-medium">
                     First Name
@@ -170,11 +198,40 @@ export default function OrderPage(context: any) {
                   </span>
                 </div>
                 <input
-                  className={`bg-secondary px-4 py-2 rounded-md ${profile.saldo <= (event?.price || 0) ? 'opacity-50 cursor-not-allowed' : 'hover:font-bold cursor-pointer'}`}
+                  className={`bg-secondary px-4 py-2 rounded-md ${
+                    profile.saldo <=
+                    Number(
+                      totalPrice(
+                        event.price || 0,
+                        profile.discount,
+                        profile.points,
+                      ),
+                    )
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:font-bold cursor-pointer'
+                  }`}
                   type="submit"
-                  disabled={profile.saldo <= (event?.price || 0)}
+                  disabled={
+                    profile.saldo <=
+                    Number(
+                      Number(
+                        totalPrice(
+                          event.price || 0,
+                          profile.discount,
+                          profile.points,
+                        ),
+                      ),
+                    )
+                  }
                   value={
-                    profile.saldo <= (event?.price || 0)
+                    profile.saldo <=
+                    Number(
+                      totalPrice(
+                        event.price || 0,
+                        profile.discount,
+                        profile.points,
+                      ),
+                    )
                       ? "Can't checkout because saldo is not enough"
                       : 'Checkout'
                   }
@@ -186,7 +243,8 @@ export default function OrderPage(context: any) {
         <CardPayment
           profile={profile}
           event={event}
-          formattedDate={formattedDate}
+          date={formattedDate}
+          onTotalTransactionChange={handleTotalTransactionChange}
         />
       </div>
     </div>

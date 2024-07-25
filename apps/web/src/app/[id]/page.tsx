@@ -2,11 +2,10 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { getEvent } from '@/api/event';
-import { format } from 'date-fns';
-import { id as idLocale } from 'date-fns/locale';
 import { FaUser } from 'react-icons/fa';
 import Link from 'next/link';
 import { Event } from '@/interface/interface';
+import { formattedDate } from '@/helper/helper';
 
 export default function EventDetails(context: any) {
   const { params } = context;
@@ -29,17 +28,14 @@ export default function EventDetails(context: any) {
   }, [params?.id]);
 
   if (!event) {
-    return <div>Loading...</div>; // or any loading indicator
+    return <div>Loading...</div>;
   }
 
-  const formattedDate = format(new Date(event.date), 'd MMMM yyyy', {
-    locale: idLocale,
-  });
   return (
     <div className="container max-w-screen-xl mx-auto items-center p-8">
       {event.image && (
         <div className="flex justify-center">
-          <div className="relative w-full h-96 mb-4">
+          <div className="relative w-full md:h-96 h-40 mb-4">
             <Image
               src={`http://localhost:8000/uploads/${event.image}`}
               alt={event.name}
@@ -50,13 +46,34 @@ export default function EventDetails(context: any) {
           </div>
         </div>
       )}
+      <div className="flex my-2 gap-4">
+        {event.promotion.map((promo: any) => (
+          <div
+            key={promo.id}
+            className="flex flex-col bg-gray-300 p-1 rounded-md"
+          >
+            <span className="text-xs">
+              Discount:{' '}
+              <span className="font-semibold">
+                ({promo.discount}%) {promo.code}
+              </span>
+            </span>
+            <span className="text-xs">
+              Until:{' '}
+              <span className="font-semibold">
+                {formattedDate(promo.expireAt)}
+              </span>
+            </span>
+          </div>
+        ))}
+      </div>
       <h1 className="text-3xl font-bold my-2">{event.name}</h1>
       <div className="flex justify-between items-center my-2">
         <span className="font-semibold capitalize">
           {event?.category?.name}
         </span>
         <span className="text-lg capitalize">
-          {event?.location}, {formattedDate} : {event.time}
+          {event?.location}, {formattedDate(event.date)} : {event.time}
         </span>
       </div>
       <div className="flex justify-between items-center my-2">

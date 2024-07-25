@@ -1,0 +1,10 @@
+import axios from 'axios';
+
+const base_url_api = 'http://localhost:8000/api';
+
+export async function buyTransactionProcess(data: any) {
+  const url = base_url_api + '/transactions/buy-ticket';
+  const res = await axios.post(url, data);
+
+  return res.data;
+}

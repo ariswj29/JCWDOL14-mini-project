@@ -15,4 +15,9 @@ export interface Event {
     id: number;
     name: string;
   };
+  promotion: {
+    id: number;
+    code: string;
+    expiredAt: string;
+  }[];
 }

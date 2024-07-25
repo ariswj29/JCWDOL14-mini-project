@@ -193,8 +193,8 @@ const FormEvents = () => {
 
           <label className="label">Description</label>
           <div className="">
-            <input
-              className="w-full border p-2"
+            <textarea
+              className="w-full h-[6.5rem] border p-2"
               {...register('description')}
               type="text"
               placeholder="description"
