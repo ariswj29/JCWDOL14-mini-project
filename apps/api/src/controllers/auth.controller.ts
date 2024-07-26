@@ -49,14 +49,25 @@ export const register = async (req: Request, res: Response) => {
       },
     });
 
-    await prisma.profile.update({
-      where: {
-        id: usingReferralCodeProfile?.id,
-      },
-      data: {
-        points: usingReferralCodeProfile?.points! + 10000,
-      },
-    });
+    if (usingReferralCodeProfile) {
+      await prisma.profile.update({
+        where: {
+          id: usingReferralCodeProfile?.id,
+        },
+        data: {
+          points: usingReferralCodeProfile?.points! + 10000,
+        },
+      });
+
+      await prisma.profile.update({
+        where: {
+          id: profile.id,
+        },
+        data: {
+          discount: 10,
+        },
+      });
+    }
 
     res.status(201).json({
       status: 'success',

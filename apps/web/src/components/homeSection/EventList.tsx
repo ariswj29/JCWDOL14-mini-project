@@ -7,6 +7,7 @@ import { getAllEvents } from '@/api/event';
 import Pagination from './pagination';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
+import { formattedMoney } from '@/helper/helper';
 
 interface Event {
   id: number;
@@ -74,7 +75,9 @@ export default function EventList(props: any) {
                 <h2 className="text-xl font-semibold pt-4">{event.name}</h2>
                 <p className="text-gray-600">{formattedDate}</p>
                 <p className="text-gray-600">{event.location}</p>
-                <p className="text-gray-600">Rp.{event.price}</p>
+                <p className="text-gray-600">
+                  {formattedMoney(event.price ?? 0)}
+                </p>
               </Link>
             </div>
           );
