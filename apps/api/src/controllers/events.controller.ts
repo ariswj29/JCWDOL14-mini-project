@@ -1,24 +1,28 @@
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 import prisma from '@/helpers/prisma';
+import { eventSchema } from '@/schema/schema';
+import * as yup from 'yup';
 
 export const createEvents = async (req: Request, res: Response) => {
-  const {
-    name,
-    isFree,
-    price,
-    date,
-    time,
-    location,
-    description,
-    availableSeats,
-    categoryId,
-    userId,
-  } = req.body;
-
-  const image = req.file?.filename;
-
   try {
+    await eventSchema.validate(req.body, { abortEarly: false });
+
+    const {
+      name,
+      isFree,
+      price,
+      date,
+      time,
+      location,
+      description,
+      availableSeats,
+      categoryId,
+      userId,
+    } = req.body;
+
+    const image = req.file?.filename;
+
     const event = await prisma.event.create({
       data: {
         name,
@@ -36,11 +40,18 @@ export const createEvents = async (req: Request, res: Response) => {
     });
     res.status(201).json({
       status: 'success',
-      message: 'Success create event',
+      message: 'Event successfully created',
       data: event,
     });
   } catch (error) {
-    res.status(500).json({ error: 'Something went wrong' });
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+
+    res.status(400).json({ error: 'An unexpected error occurred' });
   }
 };
 
@@ -300,7 +311,7 @@ export async function updateEvent(req: Request, res: Response) {
 
     res.status(200).json({
       status: 'success',
-      message: 'success update event',
+      message: 'Event successfully updated',
       data: event,
     });
   } catch (error) {

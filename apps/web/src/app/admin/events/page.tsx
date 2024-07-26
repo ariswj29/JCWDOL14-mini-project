@@ -8,6 +8,7 @@ import { FaPen, FaPlus, FaSearch, FaTrash } from 'react-icons/fa';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import Image from 'next/image';
+import { formattedMoney } from '@/helper/helper';
 
 interface Event {
   id: number;
@@ -144,7 +145,9 @@ export default function EventTable() {
                     </td>
                     <td className="border p-2">{formattedDate}</td>
                     <td className="border p-2">
-                      {event.price !== null ? `Rp.${event.price}` : 'free'}
+                      {event.price !== null
+                        ? formattedMoney(event.price)
+                        : 'free'}
                     </td>
                     <td className="border p-2">
                       <Link href={`/admin/events/${event.id}`}>

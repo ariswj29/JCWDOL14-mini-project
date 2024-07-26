@@ -74,7 +74,7 @@ const FormUsers = () => {
         {showMessage === true ? (
           <ShowMessage
             name={
-              dataMessage.message === 'Users successfully created'
+              dataMessage.message === 'User successfully created'
                 ? 'Add Data Success'
                 : dataMessage.message === 'User successfully updated'
                   ? 'Edit Data Success'

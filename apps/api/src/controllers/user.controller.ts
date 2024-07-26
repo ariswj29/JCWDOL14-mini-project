@@ -3,6 +3,8 @@ import prisma from '@/helpers/prisma';
 import { Prisma } from '@prisma/client';
 import { compare, genSalt, hash } from 'bcrypt';
 import generateReferralCode from '@/helpers/generateReferralCode';
+import { usersSchema } from '@/schema/schema';
+import * as yup from 'yup';
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -59,6 +61,8 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const createUsers = async (req: Request, res: Response) => {
   try {
+    await usersSchema.validate(req.body, { abortEarly: false });
+
     const {
       firstName,
       lastName,
@@ -107,11 +111,18 @@ export const createUsers = async (req: Request, res: Response) => {
 
     res.status(201).json({
       status: 'success',
-      message: 'Users successfully created',
+      message: 'User successfully created',
       data: user,
     });
   } catch (error) {
-    res.status(400).json({ error: 'error' });
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+
+    res.status(400).json({ error: 'An unexpected error occurred' });
   }
 };
 
@@ -143,6 +154,8 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const updateUsers = async (req: Request, res: Response) => {
   try {
+    await usersSchema.validate(req.body, { abortEarly: false });
+
     const { id } = req.params;
     const { firstName, lastName, roleId, email, address, phoneNumber } =
       req.body;
@@ -180,7 +193,14 @@ export const updateUsers = async (req: Request, res: Response) => {
       data: updatedUser,
     });
   } catch (error) {
-    res.status(400).json({ error: 'error' });
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+
+    res.status(400).json({ error: 'An unexpected error occurred' });
   }
 };
 
