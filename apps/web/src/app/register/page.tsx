@@ -2,12 +2,25 @@
 
 import { checkReferralCodeProcess, registerProcess } from '@/api/auth';
 import { ShowMessage } from '@/components/ShowMessage';
+import { registerSchema } from '@/schema/schema';
+import { yupResolver } from '@hookform/resolvers/yup';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function RegisterPage() {
+  const {
+    register,
+    watch,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(registerSchema),
+  });
+
   const router = useRouter();
   const [data, setData] = useState({
     firstName: '',
@@ -29,10 +42,10 @@ export default function RegisterPage() {
     status: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const formSubmit = async (formData: any) => {
     try {
-      const response = await registerProcess(data);
+      console.log(formData, 'formData');
+      const response = await registerProcess(formData);
 
       const { status, message } = response;
 
@@ -75,7 +88,7 @@ export default function RegisterPage() {
           show={showMessage}
         />
       )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(formSubmit)}>
         <div className="grid md:grid-cols-3 sm:grid-cols-1">
           <div className="p-12 sm:p-16 bg-secondary border border-secondary shadow-sm w-full">
             <h3 className="text-2xl font-bold ">Welcome to Register</h3>
@@ -129,39 +142,42 @@ export default function RegisterPage() {
                 First Name <span className="text-red-500">*</span>
               </label>
               <input
+                className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                {...register('firstName')}
                 type="text"
                 id="firstName"
-                value={data.firstName}
-                onChange={(e) =>
-                  setData({ ...data, firstName: e.target.value })
-                }
-                required
-                className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                placeholder="First name"
               />
+              {errors.firstName && (
+                <p className="text-xs text-red-500 m-1">
+                  {errors.firstName.message}
+                </p>
+              )}
             </div>
             <div className="mb-4">
               <label htmlFor="lastName" className="block text-sm font-medium">
                 Last Name <span className="text-red-500">*</span>
               </label>
               <input
+                className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                {...register('lastName')}
                 type="text"
                 id="lastName"
-                value={data.lastName}
-                onChange={(e) => setData({ ...data, lastName: e.target.value })}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                placeholder="Last name"
               />
+              {errors.lastName && (
+                <p className="text-xs text-red-500 m-1">
+                  {errors.lastName.message}
+                </p>
+              )}
             </div>
             <div className="mb-4">
               <label htmlFor="roleId" className="block text-sm font-medium">
                 Role <span className="text-red-500">*</span>
               </label>
               <select
-                id="roleId"
-                required
-                value={data.roleId}
-                onChange={(e) => setData({ ...data, roleId: e.target.value })}
-                className="mt-1 block w-full px-2 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                {...register('roleId')}
               >
                 <option value="" disabled selected>
                   Select Role
@@ -169,19 +185,26 @@ export default function RegisterPage() {
                 <option value="1">Customer</option>
                 <option value="2">Event Organizer</option>
               </select>
+              {errors.roleId && (
+                <p className="text-xs text-red-500 m-1">
+                  {errors.roleId.message}
+                </p>
+              )}
             </div>
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-medium">
                 Email <span className="text-red-500">*</span>
               </label>
               <input
-                type="email"
-                id="email"
-                value={data.email}
-                onChange={(e) => setData({ ...data, email: e.target.value })}
-                required
                 className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                {...register('email')}
+                placeholder="Email"
               />
+              {errors.email && (
+                <p className="text-xs text-red-500 m-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
             <div className="mb-4 relative">
               <label htmlFor="password" className="block text-sm font-medium">
@@ -189,14 +212,11 @@ export default function RegisterPage() {
               </label>
               <div className="flex justify-between">
                 <input
+                  className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                  {...register('password')}
+                  placeholder="Password"
                   type={showPassword ? 'text' : 'password'}
                   id="password"
-                  value={data.password}
-                  onChange={(e) =>
-                    setData({ ...data, password: e.target.value })
-                  }
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
                 />
                 <span
                   className="absolute right-3 mt-1 top-1/2 cursor-pointer transform"
@@ -205,6 +225,11 @@ export default function RegisterPage() {
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </div>
+              {errors.password && (
+                <p className="text-xs text-red-500 m-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
             <button
               type="submit"

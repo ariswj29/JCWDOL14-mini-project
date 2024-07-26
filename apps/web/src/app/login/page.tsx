@@ -4,14 +4,23 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { loginProcess } from '@/api/auth';
 import { ShowMessage } from '@/components/ShowMessage';
-import { useRouter } from 'next/navigation';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Cookies from 'js-cookie';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { loginSchema } from '@/schema/schema';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    register,
+    watch,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(loginSchema),
+  });
+
   const [dataMessage, setDataMessage] = useState({
     message: '',
     status: '',
@@ -20,10 +29,9 @@ export default function LoginPage() {
   const [showMessage, setShowMessage] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const formSubmit = async (formData: any) => {
     try {
-      const response = await loginProcess({ email, password });
+      const response = await loginProcess(formData);
 
       const { data, status, token } = response;
 
@@ -77,19 +85,21 @@ export default function LoginPage() {
           </p>
         </div>
         <div className="col-span-2 bg-primary shadow-md w-full">
-          <form onSubmit={handleSubmit} className="p-8">
+          <form onSubmit={handleSubmit(formSubmit)} className="p-8">
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-medium">
                 Email <span className="text-red-500">*</span>
               </label>
               <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
                 className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                {...register('email')}
+                placeholder="Email"
               />
+              {errors.email && (
+                <p className="text-xs text-red-500 m-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
             <div className="mb-4 relative">
               <label htmlFor="password" className="block text-sm font-medium">
@@ -97,12 +107,11 @@ export default function LoginPage() {
               </label>
               <div className="flex justify-between">
                 <input
+                  className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
+                  {...register('password')}
+                  placeholder="Password"
                   type={showPassword ? 'text' : 'password'}
                   id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="mt-1 block w-full px-3 py-2 border border-secondary rounded-md shadow-sm focus:outline-none sm:text-sm"
                 />
                 <span
                   className="absolute right-3 mt-1 top-1/2 cursor-pointer transform"
@@ -111,6 +120,11 @@ export default function LoginPage() {
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               </div>
+              {errors.password && (
+                <p className="text-xs text-red-500 m-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
             <button
               type="submit"

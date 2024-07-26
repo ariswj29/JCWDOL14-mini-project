@@ -18,6 +18,30 @@ export const usersSchema = yup.object().shape({
   phoneNumber: yup.string().required('Phone Number is required'),
 });
 
+export const registerSchema = yup.object().shape({
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  roleId: yup.string().required('Role is required'),
+  email: yup
+    .string()
+    .email('Email must be a valid email')
+    .required('Email is required'),
+  password: yup
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .when('$isEdit', (isEdit, schema) =>
+      isEdit ? schema.optional() : schema.required('Password is required'),
+    ),
+});
+
+export const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Email must be a valid email')
+    .required('Email is required'),
+  password: yup.string().required('Password is required'),
+});
+
 export const eventSchema = yup.object().shape({
   name: yup
     .string()
@@ -74,14 +98,6 @@ export const eventSchema = yup.object().shape({
   categoryId: yup.string().required('Category is required'),
 
   userId: yup.string().required('User ID is required'),
-});
-
-export const loginSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Email must be a valid email')
-    .required('Email is required'),
-  password: yup.string().required('Password is required'),
 });
 
 export const orderTicketSchema = yup.object().shape({
