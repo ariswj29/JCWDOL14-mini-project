@@ -93,7 +93,7 @@ const FormEvents = () => {
             name={
               dataMessage.message === 'Event successfully created'
                 ? 'Add Data Success'
-                : dataMessage.message === 'event successfully updated'
+                : dataMessage.message === 'Event successfully updated'
                   ? 'Edit Data Success'
                   : 'Failed'
             }
@@ -196,7 +196,6 @@ const FormEvents = () => {
             <textarea
               className="w-full h-[6.5rem] border p-2"
               {...register('description')}
-              type="text"
               placeholder="description"
             />
             {errors.description && (

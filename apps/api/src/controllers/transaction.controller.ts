@@ -1,9 +1,13 @@
 import { Request, Response } from 'express';
 import prisma from '@/helpers/prisma';
 import getNextQN from '@/helpers/generateQN';
+import { orderTicketSchema } from '@/schema/schema';
+import * as yup from 'yup';
 
 export const ticketTransaction = async (req: Request, res: Response) => {
   try {
+    await orderTicketSchema.validate(req.body, { abortEarly: false });
+
     const {
       eventId,
       userId,
@@ -117,6 +121,12 @@ export const ticketTransaction = async (req: Request, res: Response) => {
       data: { ...transaction, qn: attandee.qn, remainingSaldo: newSaldo },
     });
   } catch (error) {
-    console.log('error');
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+    res.status(400).json({ error: 'An unexpected error occurred' });
   }
 };

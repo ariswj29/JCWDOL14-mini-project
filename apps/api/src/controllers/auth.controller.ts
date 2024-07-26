@@ -4,9 +4,13 @@ import { compare, genSalt, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { config } from 'dotenv';
 import generateReferralCode from '@/helpers/generateReferralCode';
+import { loginSchema, registerSchema } from '@/schema/schema';
+import * as yup from 'yup';
 
 export const register = async (req: Request, res: Response) => {
   try {
+    await registerSchema.validate(req.body, { abortEarly: false });
+
     const { firstName, lastName, roleId, email, password, usingReferralCode } =
       req.body;
     const existingUser = await prisma.user.findFirst({
@@ -75,12 +79,21 @@ export const register = async (req: Request, res: Response) => {
       data: user,
     });
   } catch (error) {
-    res.status(400).json({ error: 'error' });
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+
+    res.status(400).json({ error: 'An unexpected error occurred' });
   }
 };
 
 export const login = async (req: Request, res: Response) => {
   try {
+    await loginSchema.validate(req.body, { abortEarly: false });
+
     const { email, password } = req.body;
     const user = await prisma.user.findFirst({
       where: {
@@ -122,7 +135,14 @@ export const login = async (req: Request, res: Response) => {
       token,
     });
   } catch (error) {
-    res.status(400).json({ error: 'error' });
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+
+    res.status(400).json({ error: 'An unexpected error occurred' });
   }
 };
 
