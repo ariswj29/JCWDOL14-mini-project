@@ -9,11 +9,22 @@ export const getProfile = async (req: Request, res: Response) => {
       },
       include: {
         user: true,
+        point: true,
       },
     });
+    const totalPoint = profile?.point.reduce((acc, curr) => {
+      return acc + curr.point;
+    }, 0);
     res.status(200).json({
       status: 'success',
-      data: profile,
+      data: {
+        id: profile?.id,
+        referralCode: profile?.referralCode,
+        discount: profile?.discount,
+        saldo: profile?.saldo,
+        user: profile?.user,
+        points: totalPoint,
+      },
     });
   } catch (error) {
     res.status(400).json({ error: 'error' });

@@ -57,6 +57,9 @@ const FormEvents = () => {
   const formSubmit = async (formData: any) => {
     try {
       const data = new FormData();
+      const user = localStorage.getItem('user');
+      const parsedUser = JSON.parse(user as string);
+      const userId = parsedUser.profileId;
 
       for (const key in formData) {
         if (key === 'image' && formData[key].length > 0) {
@@ -68,9 +71,9 @@ const FormEvents = () => {
 
       let response;
       if (eventId != 'add') {
-        response = await updateEvent(eventId || '', data);
+        response = await updateEvent(eventId || '', { ...formData, userId });
       } else {
-        response = await createEvents(data);
+        response = await createEvents({ ...formData, userId });
       }
 
       setShowMessage(true);
@@ -237,20 +240,6 @@ const FormEvents = () => {
               <p className="text-sm text-red-500">
                 {errors.categoryId.message}
               </p>
-            )}
-          </div>
-
-          <label className="label">User</label>
-          <div className="">
-            <select className="w-full border p-2" {...register('userId')}>
-              <option value="" disabled selected>
-                Select User
-              </option>
-              <option value="1">Aris</option>
-              <option value="2">Rahmah</option>
-            </select>
-            {errors.userId && (
-              <p className="text-sm text-red-500">{errors.userId.message}</p>
             )}
           </div>
         </div>
