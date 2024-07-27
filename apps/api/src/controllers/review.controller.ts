@@ -1,11 +1,14 @@
+import { reviewSchema } from '@/schema/schema';
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
+import * as yup from 'yup';
 
 const prisma = new PrismaClient();
 
 export async function createReview(req: Request, res: Response) {
-  const { rating, comment, eventId, transactionId, userId } = req.body;
   try {
+    await reviewSchema.validate(req.body, { abortEarly: false });
+    const { rating, comment, eventId, transactionId, userId } = req.body;
     const review = await prisma.review.create({
       data: {
         rating,
@@ -16,12 +19,18 @@ export async function createReview(req: Request, res: Response) {
       },
     });
     res.status(200).json({
-      status: 'succeess',
+      status: 'success',
       message: 'success create review',
       data: review,
     });
   } catch (error) {
-    res.status(500).json({ message: 'something went wrong' });
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+    res.status(400).json({ message: 'something went wrong' });
   }
 }
 
@@ -58,6 +67,6 @@ export const getAllReview = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: 'error' });
+    res.status(400).json({ error: 'error' });
   }
 };
