@@ -45,7 +45,10 @@ export default function RegisterPage() {
   const formSubmit = async (formData: any) => {
     try {
       console.log(formData, 'formData');
-      const response = await registerProcess(formData);
+      const response = await registerProcess({
+        ...formData,
+        usingReferralCode: data.usingReferralCode,
+      });
 
       const { status, message } = response;
 

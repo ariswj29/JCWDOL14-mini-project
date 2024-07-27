@@ -3,12 +3,7 @@ import { formattedMoney, totalPrice } from '@/helper/helper';
 import Image from 'next/image';
 import { FaBan, FaCalendarCheck, FaChair } from 'react-icons/fa';
 
-export default function CardOrdered({
-  profile,
-  event,
-  date,
-  onTotalTransactionChange,
-}: any) {
+export default function CardOrdered({ profile, event, date }: any) {
   const [selectedDiscount, setSelectedDiscount] = useState(0);
 
   const calculateTotalTransaction = () => {
@@ -17,7 +12,6 @@ export default function CardOrdered({
 
   useEffect(() => {
     const totalTransaction = calculateTotalTransaction();
-    onTotalTransactionChange(totalTransaction);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDiscount, profile.points]);
 

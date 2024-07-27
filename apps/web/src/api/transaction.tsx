@@ -8,3 +8,10 @@ export async function buyTransactionProcess(data: any) {
 
   return res.data;
 }
+
+export async function getTransaction(id: number) {
+  const url = base_url_api + `/transactions/${id}`;
+  const res = await axios.get(url);
+
+  return res.data;
+}

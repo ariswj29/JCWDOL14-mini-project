@@ -61,7 +61,7 @@ export const ticketTransaction = async (req: Request, res: Response) => {
     }
 
     const saldo = profile.saldo || 0;
-    if (saldo <= event.price) {
+    if (saldo <= totalTransaction) {
       return res.status(400).json({
         status: 'error',
         message: 'Saldo not enough!',
@@ -115,6 +115,12 @@ export const ticketTransaction = async (req: Request, res: Response) => {
       },
     });
 
+    await prisma.point.deleteMany({
+      where: {
+        profileId: profile.id,
+      },
+    });
+
     res.status(200).json({
       status: 'success',
       message: 'success buy ticket',
@@ -127,6 +133,23 @@ export const ticketTransaction = async (req: Request, res: Response) => {
         message: error.errors,
       });
     }
+    res.status(400).json({ error: 'An unexpected error occurred' });
+  }
+};
+
+export const getTransaction = async (req: Request, res: Response) => {
+  try {
+    const attandees = await prisma.attandee.findFirst({
+      where: {
+        id: Number(req.params.id),
+      },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: attandees,
+    });
+  } catch (error) {
     res.status(400).json({ error: 'An unexpected error occurred' });
   }
 };
