@@ -143,6 +143,9 @@ export const getTransaction = async (req: Request, res: Response) => {
       where: {
         id: Number(req.params.id),
       },
+      include: {
+        transaction: true,
+      },
     });
 
     res.status(200).json({
