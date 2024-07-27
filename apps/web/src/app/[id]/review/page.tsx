@@ -5,17 +5,22 @@ import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { id as idLocale } from 'date-fns/locale';
 import { Event } from '@/interface/interface';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getProfileProcess } from '@/api/profile';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { reviewSchema } from '@/schema/schema';
 import { createReview } from '@/api/review';
 import CardOrdered from '@/components/CardOrdered';
+import { getTransaction } from '@/api/transaction';
 
 export default function ReviewPage(context: any) {
   const { params } = context;
+  console.log('params', params);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const transactionId = searchParams.get('transactionId');
+
   const [profile, setProfile] = useState({
     id: 0,
     saldo: 0,
@@ -28,7 +33,8 @@ export default function ReviewPage(context: any) {
     comment: '',
   });
   const [event, setEvent] = useState<Event | null>(null);
-  const [totalTransaction, setTotalTransaction] = useState(0);
+  const [transaction, setTransaction] = useState<any | null>(null);
+  console.log(transaction, 'transaction');
   const {
     register,
     watch,
@@ -46,27 +52,25 @@ export default function ReviewPage(context: any) {
         if (user) {
           const { profileId } = JSON.parse(user);
           const response = await getProfileProcess(profileId);
-
+          const res = await getTransaction(parseInt(transactionId ?? ''));
+          setProfile(response.data);
           setUser(response.data.user);
+          setTransaction(res.data);
         } else {
           console.error('User not found');
         }
 
-        const response = await getEvent(params.id);
-        setEvent(response.data);
+        if (params?.id) {
+          const response = await getEvent(params.id);
+          setEvent(response.data);
+        }
       } catch (error) {
         console.error(error);
       }
     };
 
-    if (params?.id) {
-      fetchEventDetails();
-    }
+    fetchEventDetails();
   }, [params?.id, router]);
-
-  const handleTotalTransactionChange = (total: number) => {
-    setTotalTransaction(total);
-  };
 
   const formSubmit = async (formData: any) => {
     try {
@@ -76,12 +80,13 @@ export default function ReviewPage(context: any) {
         const response = await createReview({
           userId: profileId,
           eventId: event?.id,
+          transactionId,
           ...formData,
         });
         console.log('response', response);
         if (response.status === 'success') {
-          alert('Success create review');
-          router.push(`/${event?.id}/review`);
+          alert('Thank you for your order');
+          router.push(`/`);
         } else {
           alert('Failed create review');
         }
@@ -158,7 +163,8 @@ export default function ReviewPage(context: any) {
           profile={profile}
           event={event}
           date={formattedDate}
-          onTotalTransactionChange={handleTotalTransactionChange}
+          qn={transaction.qn}
+          totalPayment={transaction.transaction.price}
         />
       </div>
     </div>

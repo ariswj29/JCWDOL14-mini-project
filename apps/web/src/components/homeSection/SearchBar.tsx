@@ -21,11 +21,6 @@ const SearchBar = (props: any) => {
             placeholder="Search events or location"
             className="py-2 px-4 rounded-l-md border border-secondary w-full"
           />
-          <button className="bg-secondary text-white h-[2.7rem] py-2 px-4 border-2 border-secondary rounded-r-md hover:font-bold focus:ring-2 focus:ring-blue-900 focus:ring-opacity-50">
-            <span>
-              <FaSearch size={20} />
-            </span>
-          </button>
         </div>
       </div>
     </div>

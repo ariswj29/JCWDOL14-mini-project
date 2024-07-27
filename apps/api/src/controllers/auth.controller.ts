@@ -54,12 +54,14 @@ export const register = async (req: Request, res: Response) => {
     });
 
     if (usingReferralCodeProfile) {
-      await prisma.profile.update({
-        where: {
-          id: usingReferralCodeProfile?.id,
-        },
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + 90);
+
+      await prisma.point.create({
         data: {
-          points: usingReferralCodeProfile?.points! + 10000,
+          profileId: usingReferralCodeProfile.id,
+          point: 10000,
+          expireAt: expirationDate,
         },
       });
 

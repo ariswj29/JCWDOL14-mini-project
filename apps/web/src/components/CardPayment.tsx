@@ -8,9 +8,9 @@ export default function CardPayment({
   event,
   date,
   onTotalTransactionChange,
+  selectedDiscount,
+  setSelectedDiscount,
 }: any) {
-  const [selectedDiscount, setSelectedDiscount] = useState(0);
-
   const calculateTotalTransaction = () => {
     return totalPrice(event.price, selectedDiscount, profile.points);
   };

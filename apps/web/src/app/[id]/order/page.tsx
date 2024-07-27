@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { orderTicketSchema } from '@/schema/schema';
 import { totalPrice } from '@/helper/helper';
-import { buyTransactionProcess } from '@/api/transaction';
+import { buyTransactionProcess, getTransaction } from '@/api/transaction';
 
 export default function OrderPage(context: any) {
   const { params } = context;
@@ -44,6 +44,8 @@ export default function OrderPage(context: any) {
     resolver: yupResolver(orderTicketSchema),
   });
 
+  const [selectedDiscount, setSelectedDiscount] = useState(0);
+
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
@@ -72,7 +74,7 @@ export default function OrderPage(context: any) {
     if (params?.id) {
       fetchEventDetails();
     }
-  }, [params?.id, router]);
+  }, [params?.id, router, selectedDiscount]);
 
   const handleTotalTransactionChange = (total: number) => {
     setTotalTransaction(total);
@@ -95,7 +97,7 @@ export default function OrderPage(context: any) {
       console.log('response', response);
       if (response.status === 'success') {
         alert('Success buy ticket');
-        router.push(`/${event?.id}/review`);
+        router.push(`/${event?.id}/review?transactionId=${response.data.id}`);
       } else {
         alert('Failed to buy ticket');
       }
@@ -203,7 +205,7 @@ export default function OrderPage(context: any) {
                     Number(
                       totalPrice(
                         event.price || 0,
-                        profile.discount,
+                        selectedDiscount,
                         profile.points,
                       ),
                     )
@@ -217,7 +219,7 @@ export default function OrderPage(context: any) {
                       Number(
                         totalPrice(
                           event.price || 0,
-                          profile.discount,
+                          selectedDiscount,
                           profile.points,
                         ),
                       ),
@@ -228,7 +230,7 @@ export default function OrderPage(context: any) {
                     Number(
                       totalPrice(
                         event.price || 0,
-                        profile.discount,
+                        selectedDiscount,
                         profile.points,
                       ),
                     )
@@ -245,6 +247,8 @@ export default function OrderPage(context: any) {
           event={event}
           date={formattedDate}
           onTotalTransactionChange={handleTotalTransactionChange}
+          selectedDiscount={selectedDiscount}
+          setSelectedDiscount={setSelectedDiscount}
         />
       </div>
     </div>

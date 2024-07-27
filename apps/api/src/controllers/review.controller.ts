@@ -9,6 +9,7 @@ export async function createReview(req: Request, res: Response) {
   try {
     await reviewSchema.validate(req.body, { abortEarly: false });
     const { rating, comment, eventId, transactionId, userId } = req.body;
+    console.log('req.body', req.body);
     const review = await prisma.review.create({
       data: {
         rating,

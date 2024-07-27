@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { formattedMoney, totalPrice } from '@/helper/helper';
 import Image from 'next/image';
-import { FaBan, FaCalendarCheck, FaChair } from 'react-icons/fa';
 
 export default function CardOrdered({
   profile,
   event,
   date,
-  onTotalTransactionChange,
+  qn,
+  totalPayment,
 }: any) {
   const [selectedDiscount, setSelectedDiscount] = useState(0);
 
@@ -17,8 +17,6 @@ export default function CardOrdered({
 
   useEffect(() => {
     const totalTransaction = calculateTotalTransaction();
-    onTotalTransactionChange(totalTransaction);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDiscount, profile.points]);
 
   const handleDiscountChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -44,11 +42,12 @@ export default function CardOrdered({
         <span className="text-base capitalize">
           {event?.location}, {date} : {event.time}
         </span>
+        <h4 className="text-base capitalize">queue number : {qn}</h4>
         <hr className="my-4" />
         <div className="flex justify-between">
           <h4 className="text-base font-bold">Total Payment</h4>
           <h4 className="text-base font-bold">
-            {formattedMoney(calculateTotalTransaction())}
+            {formattedMoney(totalPayment)}
           </h4>
         </div>
       </div>
