@@ -276,6 +276,8 @@ export async function getEvent(req: Request, res: Response) {
 
 export async function updateEvent(req: Request, res: Response) {
   try {
+    await eventSchema.validate(req.body, { abortEarly: false });
+
     const { id } = req.params;
     const image = req.file?.filename;
 
@@ -315,7 +317,14 @@ export async function updateEvent(req: Request, res: Response) {
       data: event,
     });
   } catch (error) {
-    res.status(500).json({ error: 'Something went wrong' });
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+
+    res.status(400).json({ error: 'An unexpected error occurred' });
   }
 }
 

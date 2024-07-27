@@ -113,3 +113,20 @@ export const orderTicketSchema = yup.object().shape({
   phoneNumber: yup.string().required('Phone Number is required'),
   address: yup.string().required('Address is required'),
 });
+
+export const promotionSchema = yup.object().shape({
+  code: yup.string().required('code is required'),
+  discount: yup.string().required('discount is required'),
+  eventId: yup.string().required('event is required'),
+  expireAt: yup
+    .date()
+    .required('Date is required')
+    .min(new Date(), 'Date must be in the future'),
+});
+
+export const reviewSchema = yup.object().shape({
+  rating: yup.string().required('rating is required'),
+  comment: yup.string().required('comment is required'),
+  eventId: yup.string().required('event is required'),
+  userId: yup.string().required('user is required'),
+});

@@ -49,11 +49,16 @@ export const sidebars = [
   },
   {
     id: 4,
+    title: 'Review',
+    link: '/admin/review',
+  },
+  {
+    id: 5,
     title: 'Transactions',
     link: '/admin/transactions',
   },
   {
-    id: 5,
+    id: 6,
     title: 'Users',
     link: '/admin/users',
   },

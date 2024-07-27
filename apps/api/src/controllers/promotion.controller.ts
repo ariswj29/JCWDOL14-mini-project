@@ -1,12 +1,30 @@
+import { promotionSchema } from '@/schema/schema';
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
+import * as yup from 'yup';
 
 const prisma = new PrismaClient();
 
-export async function createPromotion(req: Request, res: Response) {
-  const { code, discount, eventId, userId, expireAt } = req.body;
-
+export async function selectEvent(req: Request, res: Response) {
   try {
+    const event = await prisma.event.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+    res.status(200).json({ message: 'success', data: event });
+  } catch (error) {
+    res.status(400).json({ message: 'something went wrong' });
+  }
+}
+
+export async function createPromotion(req: Request, res: Response) {
+  try {
+    await promotionSchema.validate(req.body, { abortEarly: false });
+
+    const { code, discount, eventId, userId, expireAt } = req.body;
+
     const promotion = await prisma.promotion.create({
       data: {
         code,
@@ -18,11 +36,17 @@ export async function createPromotion(req: Request, res: Response) {
     });
     res.status(200).json({
       status: 'success',
-      message: 'success create promotion',
+      message: 'promotion successfully created',
       data: promotion,
     });
   } catch (error) {
-    res.status(500).json({ error: 'something went wrong' });
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+    res.status(400).json({ error: 'something went wrong' });
   }
 }
 
@@ -69,8 +93,8 @@ export const getAllPromotions = async (req: Request, res: Response) => {
 };
 
 export async function getPromotion(req: Request, res: Response) {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
     const promotion = await prisma.promotion.findUnique({
       where: { id: Number(id) },
       include: { event: true },
@@ -84,12 +108,14 @@ export async function getPromotion(req: Request, res: Response) {
       data: promotion,
     });
   } catch (error) {
-    res.status(400).json({ error: 'something went wrong' });
+    res.status(400).json({ error: 'something went true' });
   }
 }
 
 export async function updatePromotion(req: Request, res: Response) {
   try {
+    await promotionSchema.validate(req.body, { abortEarly: false });
+
     const { id } = req.params;
     const { code, discount, eventId, userId, expireAt } = req.body;
 
@@ -105,11 +131,17 @@ export async function updatePromotion(req: Request, res: Response) {
     });
     res.status(200).json({
       status: 'success',
-      message: 'success update promotion',
+      message: 'promotion successfully updated',
       data: promotion,
     });
   } catch (error) {
-    res.status(500).json({ message: 'something went wrong' });
+    if (error instanceof yup.ValidationError) {
+      return res.status(400).json({
+        status: 'error',
+        message: error.errors,
+      });
+    }
+    res.status(400).json({ message: 'something went wrong' });
   }
 }
 
@@ -125,6 +157,6 @@ export async function deletePromotion(req: Request, res: Response) {
       data: promotion,
     });
   } catch (error) {
-    res.status(500).json({ message: 'something went wrong' });
+    res.status(400).json({ message: 'something went wrong' });
   }
 }

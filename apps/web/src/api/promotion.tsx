@@ -42,3 +42,9 @@ export async function deletePromotion(id: number) {
 
   return res.data;
 }
+export async function selectEvent() {
+  const url = base_url_api + '/promotions/select-event';
+  const res = await axios.get(url);
+
+  return res.data;
+}

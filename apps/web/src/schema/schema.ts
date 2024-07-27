@@ -103,8 +103,6 @@ export const eventSchema = yup.object().shape({
     .min(1, 'There must be at least one available seat'),
 
   categoryId: yup.string().required('Category is required'),
-
-  userId: yup.string().required('User ID is required'),
 });
 
 export const orderTicketSchema = yup.object().shape({
@@ -116,4 +114,19 @@ export const orderTicketSchema = yup.object().shape({
     .required('Email is required'),
   phoneNumber: yup.string().required('Phone Number is required'),
   address: yup.string().required('Address is required'),
+});
+
+export const promotionSchema = yup.object().shape({
+  code: yup.string().required('code is required'),
+  discount: yup.string().required('discount is required'),
+  eventId: yup.string().required('event is required'),
+  expireAt: yup
+    .date()
+    .required('Date is required')
+    .min(new Date(), 'Date must be in the future'),
+});
+
+export const reviewSchema = yup.object().shape({
+  rating: yup.string().required('rating is required'),
+  comment: yup.string().required('comment is required'),
 });
