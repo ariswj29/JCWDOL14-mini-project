@@ -8,15 +8,21 @@ import {
 } from '@/controllers/events.controller';
 import { Router } from 'express';
 import upload from '@/middleware/uploader';
+import { adminGuard, verifyToken } from '@/middleware/jwt.middleware';
 
 const router = Router();
 
-// Tambahkan middleware multer ke dalam route POST dan PUT
-router.post('/', upload.single('image'), createEvents);
+router.post('/', verifyToken, adminGuard, upload.single('image'), createEvents);
 router.get('/', getAllEvents);
-router.get('/table', getAllTableEvent);
+router.get('/table', verifyToken, adminGuard, getAllTableEvent);
 router.get('/:id', getEvent);
-router.put('/:id', upload.single('image'), updateEvent);
-router.delete('/:id', deleteEvent);
+router.put(
+  '/:id',
+  verifyToken,
+  adminGuard,
+  upload.single('image'),
+  updateEvent,
+);
+router.delete('/:id', verifyToken, adminGuard, deleteEvent);
 
 export default router;

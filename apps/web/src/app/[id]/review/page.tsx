@@ -118,7 +118,7 @@ export default function ReviewPage(context: any) {
                   </label>
                   <select className="w-full border p-2" {...register('rating')}>
                     <option value="" disabled selected>
-                      select your rating
+                      Select your rating
                     </option>
                     <option>⭐️⭐️⭐️⭐️⭐️</option>
                     <option>⭐️⭐️⭐️⭐️</option>
@@ -160,11 +160,10 @@ export default function ReviewPage(context: any) {
           </div>
         </div>
         <CardOrdered
-          profile={profile}
           event={event}
           date={formattedDate}
-          qn={transaction.qn}
-          totalPayment={transaction.transaction.price}
+          qn={transaction?.qn}
+          totalPayment={transaction?.transaction.price}
         />
       </div>
     </div>

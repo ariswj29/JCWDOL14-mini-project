@@ -77,7 +77,7 @@ export const profiles = [
   },
   {
     id: 3,
-    title: 'Change Password',
-    link: '#change-password',
+    title: 'Your Transactions',
+    link: '#transactions',
   },
 ];

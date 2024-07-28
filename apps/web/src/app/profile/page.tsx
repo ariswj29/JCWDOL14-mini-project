@@ -2,20 +2,14 @@
 
 import { getProfileProcess } from '@/api/profile';
 import EditProfile from '@/components/profileSection/EditProfile';
+import Transactions from '@/components/profileSection/Transactions';
 import Points from '@/components/profileSection/Points';
 import SidebarProfile from '@/components/profileSection/SidebarProfile';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Profile } from '@/interface/interface';
 
 export default function ProfilePage() {
-  interface Profile {
-    id: number;
-    saldo: number;
-    points: number;
-    discount: number;
-    referralCode: string;
-  }
-
   const [profile, setProfile] = useState<Profile>({
     id: 0,
     saldo: 0,
@@ -31,6 +25,9 @@ export default function ProfilePage() {
     phoneNumber: '',
     address: '',
   });
+
+  const [transactions, setTransactions] = useState([]);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -46,6 +43,7 @@ export default function ProfilePage() {
 
           setProfile(response.data);
           setUser(response.data.user);
+          setTransactions(response.data.transactions);
         } else {
           console.error('User not found');
         }
@@ -55,7 +53,7 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, []);
+  }, [router]);
 
   return (
     <section className="p-12 max-w-screen-xl mx-auto items-center">
@@ -63,6 +61,7 @@ export default function ProfilePage() {
         <SidebarProfile />
         <div className="col-span-2 bg-primary shadow-md w-full">
           <EditProfile profile={user} setProfile={setUser} />
+          <hr className="col-span-3 my-4" />
           <Points
             id={profile.id}
             saldo={profile.saldo}
@@ -70,6 +69,8 @@ export default function ProfilePage() {
             discounts={profile.discount}
             referralCode={profile.referralCode}
           />
+          <hr className="col-span-3 my-4" />
+          <Transactions transactions={transactions} />
         </div>
       </div>
     </section>

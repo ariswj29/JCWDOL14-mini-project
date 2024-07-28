@@ -12,6 +12,21 @@ export const getProfile = async (req: Request, res: Response) => {
         point: true,
       },
     });
+
+    const attandees = await prisma.attandee.findMany({
+      where: {
+        userId: Number(req.params.id),
+      },
+      include: {
+        event: true,
+        transaction: {
+          include: {
+            review: true,
+          },
+        },
+      },
+    });
+
     const totalPoint = profile?.point.reduce((acc, curr) => {
       return acc + curr.point;
     }, 0);
@@ -24,6 +39,7 @@ export const getProfile = async (req: Request, res: Response) => {
         saldo: profile?.saldo,
         user: profile?.user,
         points: totalPoint,
+        transactions: attandees,
       },
     });
   } catch (error) {
