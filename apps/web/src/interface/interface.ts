@@ -21,3 +21,43 @@ export interface Event {
     expiredAt: string;
   }[];
 }
+
+export interface Profile {
+  id: number;
+  saldo: number;
+  points: number;
+  discount: number;
+  referralCode: string;
+}
+
+export interface Transactions {
+  id: number;
+  no: number;
+  userId: number;
+  price: number;
+  event: {
+    id: number;
+    name: string;
+    price: number;
+  };
+  user: {
+    firstName: string;
+    lastName: string;
+  };
+  transaction: {
+    price: number;
+  };
+}
+
+export interface Review {
+  id: number;
+  no: number;
+  rating: string;
+  comment: string;
+  eventId: number;
+  transactionId: number;
+  userId: number;
+  event: {
+    name: string;
+  };
+}

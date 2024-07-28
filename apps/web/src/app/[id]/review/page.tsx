@@ -52,7 +52,7 @@ export default function ReviewPage(context: any) {
         if (user) {
           const { profileId } = JSON.parse(user);
           const response = await getProfileProcess(profileId);
-          const res = await getTransaction(transactionId);
+          const res = await getTransaction(parseInt(transactionId ?? ''));
           setProfile(response.data);
           setUser(response.data.user);
           setTransaction(res.data);
@@ -80,13 +80,13 @@ export default function ReviewPage(context: any) {
         const response = await createReview({
           userId: profileId,
           eventId: event?.id,
-          transactionId, // Include transactionId here
+          transactionId,
           ...formData,
         });
         console.log('response', response);
         if (response.status === 'success') {
-          alert('Success create review');
-          router.push(`/${event?.id}/review`);
+          alert('Thank you for your order');
+          router.push(`/`);
         } else {
           alert('Failed create review');
         }
@@ -118,7 +118,7 @@ export default function ReviewPage(context: any) {
                   </label>
                   <select className="w-full border p-2" {...register('rating')}>
                     <option value="" disabled selected>
-                      select your rating
+                      Select your rating
                     </option>
                     <option>⭐️⭐️⭐️⭐️⭐️</option>
                     <option>⭐️⭐️⭐️⭐️</option>
@@ -159,7 +159,12 @@ export default function ReviewPage(context: any) {
             </form>
           </div>
         </div>
-        <CardOrdered profile={profile} event={event} date={formattedDate} />
+        <CardOrdered
+          event={event}
+          date={formattedDate}
+          qn={transaction?.qn}
+          totalPayment={transaction?.transaction.price}
+        />
       </div>
     </div>
   );

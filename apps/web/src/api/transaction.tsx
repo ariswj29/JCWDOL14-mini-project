@@ -15,3 +15,15 @@ export async function getTransaction(id: number) {
 
   return res.data;
 }
+
+export async function getAllTransactions(page: number) {
+  const url = base_url_api + '/transactions';
+  const config = {
+    params: {
+      page,
+    },
+  };
+  const res = await axios.get(url, config);
+
+  return res.data;
+}
