@@ -141,7 +141,7 @@ export const getTransaction = async (req: Request, res: Response) => {
   try {
     const attandees = await prisma.attandee.findFirst({
       where: {
-        id: Number(req.params.id),
+        transactionId: Number(req.params.id),
       },
       include: {
         transaction: true,
@@ -151,6 +151,46 @@ export const getTransaction = async (req: Request, res: Response) => {
     res.status(200).json({
       status: 'success',
       data: attandees,
+    });
+  } catch (error) {
+    res.status(400).json({ error: 'An unexpected error occurred' });
+  }
+};
+
+export const getAllTransaction = async (req: Request, res: Response) => {
+  try {
+    const { page, limit = '10' } = req.query;
+
+    const pageNumber = parseInt(page as string, 10);
+    const limitNumber = parseInt(limit as string, 10);
+
+    const transaction = await prisma.attandee.findMany({
+      include: { event: true, user: true, transaction: true },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      skip: (pageNumber - 1) * limitNumber,
+      take: limitNumber,
+    } as any);
+
+    const transactionWithIndex = transaction.map((transaction, index) => ({
+      ...transaction,
+      no: (pageNumber - 1) * limitNumber + index + 1,
+    }));
+
+    const totalReview = await prisma.attandee.count({ where: {} });
+    const totalPages = Math.ceil(totalReview / limitNumber);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'success get all transaction',
+      data: transactionWithIndex,
+      pagination: {
+        totalItems: totalReview,
+        totalPages,
+        currentPage: pageNumber,
+        pageSize: limitNumber,
+      },
     });
   } catch (error) {
     res.status(400).json({ error: 'An unexpected error occurred' });
