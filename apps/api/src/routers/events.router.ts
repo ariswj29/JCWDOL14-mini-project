@@ -12,15 +12,15 @@ import { adminGuard, verifyToken } from '@/middleware/jwt.middleware';
 
 const router = Router();
 
-router.post('/', verifyToken, adminGuard, upload.single('image'), createEvents);
+router.post('/', upload.single('image'), verifyToken, adminGuard, createEvents);
 router.get('/', getAllEvents);
 router.get('/table', verifyToken, adminGuard, getAllTableEvent);
 router.get('/:id', getEvent);
 router.put(
   '/:id',
+  upload.single('image'),
   verifyToken,
   adminGuard,
-  upload.single('image'),
   updateEvent,
 );
 router.delete('/:id', verifyToken, adminGuard, deleteEvent);
