@@ -130,7 +130,7 @@ export default function EventTable() {
                     <td className="border p-2">{promotion.no}</td>
                     <td className="border p-2 capitalize">{promotion.code}</td>
                     <td className="border p-2 capitalize">
-                      {promotion.discount}
+                      {promotion.discount}%
                     </td>
                     <td className="border p-2 capitalize">
                       {promotion.event.name}

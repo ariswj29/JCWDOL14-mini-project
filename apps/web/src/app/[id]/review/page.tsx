@@ -21,13 +21,6 @@ export default function ReviewPage(context: any) {
   const searchParams = useSearchParams();
   const transactionId = searchParams.get('transactionId');
 
-  const [profile, setProfile] = useState({
-    id: 0,
-    saldo: 0,
-    points: 0,
-    discount: 0,
-    referralCode: '',
-  });
   const [user, setUser] = useState({
     rating: '',
     comment: '',
@@ -53,7 +46,6 @@ export default function ReviewPage(context: any) {
           const { profileId } = JSON.parse(user);
           const response = await getProfileProcess(profileId);
           const res = await getTransaction(parseInt(transactionId ?? ''));
-          setProfile(response.data);
           setUser(response.data.user);
           setTransaction(res.data);
         } else {
@@ -136,11 +128,10 @@ export default function ReviewPage(context: any) {
                   <label htmlFor="comment" className="text-base font-medium">
                     Comment
                   </label>
-                  <input
-                    type="text"
+                  <textarea
                     id="comment"
                     placeholder="Please leave a review or comment "
-                    className="w-full p-2 border border-gray-300 rounded-md"
+                    className="w-full h-40 p-2 border border-gray-300 rounded-md"
                     {...register('comment')}
                     defaultValue={user.comment}
                   />

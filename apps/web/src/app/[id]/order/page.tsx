@@ -201,7 +201,7 @@ export default function OrderPage(context: any) {
                 </div>
                 <input
                   className={`bg-secondary px-4 py-2 rounded-md ${
-                    profile.saldo <=
+                    profile.saldo <
                     Number(
                       totalPrice(
                         event.price || 0,
@@ -214,7 +214,7 @@ export default function OrderPage(context: any) {
                   }`}
                   type="submit"
                   disabled={
-                    profile.saldo <=
+                    profile.saldo <
                     Number(
                       Number(
                         totalPrice(
@@ -226,7 +226,7 @@ export default function OrderPage(context: any) {
                     )
                   }
                   value={
-                    profile.saldo <=
+                    profile.saldo <
                     Number(
                       totalPrice(
                         event.price || 0,
