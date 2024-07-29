@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../utils/axiosConfig';
 
 const base_url_api = 'http://localhost:8000/api';
 

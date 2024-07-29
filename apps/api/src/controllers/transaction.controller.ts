@@ -61,7 +61,7 @@ export const ticketTransaction = async (req: Request, res: Response) => {
     }
 
     const saldo = profile.saldo || 0;
-    if (saldo <= totalTransaction) {
+    if (saldo < totalTransaction) {
       return res.status(400).json({
         status: 'error',
         message: 'Saldo not enough!',

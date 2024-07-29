@@ -208,6 +208,20 @@ export const deleteUsers = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
+    const profile = await prisma.profile.findFirst({
+      where: {
+        userId: Number(id),
+      },
+    });
+
+    if (profile) {
+      await prisma.profile.delete({
+        where: {
+          id: profile?.id,
+        },
+      });
+    }
+
     const user = await prisma.user.findUnique({
       where: {
         id: Number(id),

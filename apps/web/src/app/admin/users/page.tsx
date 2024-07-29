@@ -117,7 +117,7 @@ export default function UsersPage() {
                   </td>
                   <td className="border p-2">{user.email}</td>
                   <td className="border p-2">
-                    {user.roleId == 1 ? 'Event Organizer' : 'Customer'}
+                    {user.roleId == 1 ? 'Customer' : 'Event Organizer'}
                   </td>
                   <td className="border p-2">
                     <Link href={`/admin/users/${user.id}`}>
@@ -161,6 +161,7 @@ export default function UsersPage() {
             id={id}
             setModal={setConfirmationModal}
             title="Delete"
+            for="users"
           />
         ) : null}
       </div>

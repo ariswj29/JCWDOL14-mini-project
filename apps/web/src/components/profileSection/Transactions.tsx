@@ -22,7 +22,7 @@ export default function Transactions({ transactions }: any) {
     <div id="transactions" className="p-8">
       {detail && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg">
+          <div className="w-[35rem] bg-white p-8 rounded-lg">
             <h1 className="text-lg font-bold">Detail Transaction</h1>
             <Image
               src={`http://localhost:8000/uploads/${detailData.event?.image}`}

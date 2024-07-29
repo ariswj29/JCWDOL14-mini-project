@@ -76,7 +76,7 @@ export default function CardPayment({
             <h4 className="text-base font-bold">Your Saldo</h4>
             <h4
               className={`text-base font-bold ${
-                profile.saldo <=
+                profile.saldo <
                 totalPrice(event.price, selectedDiscount, profile.points)
                   ? 'text-red-500'
                   : null
@@ -85,7 +85,7 @@ export default function CardPayment({
               {formattedMoney(profile.saldo)}
             </h4>
             <span className="text-xs text-red-500">
-              {profile.saldo <=
+              {profile.saldo <
               totalPrice(event.price, selectedDiscount, profile.points)
                 ? ' (Saldo is not enough)'
                 : null}

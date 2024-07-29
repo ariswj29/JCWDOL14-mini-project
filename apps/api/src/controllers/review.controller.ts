@@ -43,7 +43,7 @@ export const getAllReview = async (req: Request, res: Response) => {
     const limitNumber = parseInt(limit as string, 10);
 
     const review = await prisma.review.findMany({
-      include: { event: true },
+      include: { event: true, user: true },
       skip: (pageNumber - 1) * limitNumber,
       take: limitNumber,
     });

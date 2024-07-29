@@ -60,4 +60,8 @@ export interface Review {
   event: {
     name: string;
   };
+  user: {
+    firstName: string;
+    lastName: string;
+  };
 }

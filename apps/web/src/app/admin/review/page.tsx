@@ -49,7 +49,7 @@ export default function ReviewTable() {
               <th className="px-4 py-2">Rating</th>
               <th className="px-4 py-2">Comment</th>
               <th className="px-4 py-2">Event</th>
-              <th className="px-4 py-2">Transaction Id</th>
+              <th className="px-4 py-2">User</th>
             </tr>
           </thead>
           <tbody>
@@ -68,7 +68,9 @@ export default function ReviewTable() {
                   <td className="border p-2 capitalize">{review.rating}</td>
                   <td className="border p-2 capitalize">{review.comment}</td>
                   <td className="border p-2 capitalize">{review.event.name}</td>
-                  <td className="border p-2">{review.transactionId}</td>
+                  <td className="border p-2">
+                    {review.user.firstName} {review.user.lastName}
+                  </td>
                 </tr>
               ))
             )}
