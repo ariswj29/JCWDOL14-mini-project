@@ -99,8 +99,6 @@ export const eventSchema = yup.object().shape({
     .min(1, 'There must be at least one available seat'),
 
   categoryId: yup.string().required('Category is required'),
-
-  userId: yup.string().required('User ID is required'),
 });
 
 export const orderTicketSchema = yup.object().shape({

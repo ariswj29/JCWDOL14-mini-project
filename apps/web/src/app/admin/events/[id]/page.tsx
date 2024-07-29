@@ -1,18 +1,16 @@
 'use client';
 
-import { createUserProcess, getUserById, updateUserProcess } from '@/api/user';
+import { createEvents, getEvent, updateEvent } from '@/api/event';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useParams, useRouter } from 'next/navigation';
 import { ShowMessage } from '@/components/ShowMessage';
 import { eventSchema } from '@/schema/schema';
-import { createEvents, getEvent, updateEvent } from '@/api/event';
 
 const FormEvents = () => {
   const {
     register,
-    watch,
     handleSubmit,
     reset,
     formState: { errors },
@@ -31,7 +29,7 @@ const FormEvents = () => {
   const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
-    if (eventId != 'add') {
+    if (eventId !== 'add') {
       getEvent(eventId || '')
         .then((data) => {
           const eventData = data.data;
@@ -43,55 +41,47 @@ const FormEvents = () => {
           reset(eventData);
         })
         .catch((error) => {
-          console.error('Error fetching user:', error);
+          console.error('Error fetching event:', error);
         });
     }
   }, [eventId, reset]);
 
-  useEffect(() => {
-    if (eventId) {
-      reset({ ...watch() });
-    }
-  }, [eventId, reset, watch]);
-
   const formSubmit = async (formData: any) => {
-    try {
-      const data = new FormData();
-      const user = localStorage.getItem('user');
-      const parsedUser = JSON.parse(user as string);
-      const userId = parsedUser.profileId;
+    const data = new FormData();
+    const user = localStorage.getItem('user');
+    const { profileId } = JSON.parse(user as string);
+    formData.userId = profileId;
+    console.log(data, 'data');
+    console.log(formData, 'formData');
 
-      for (const key in formData) {
-        if (key === 'image' && formData[key].length > 0) {
-          data.append(key, formData[key][0]);
-        } else {
-          data.append(key, formData[key]);
-        }
-      }
-
-      let response;
-      if (eventId != 'add') {
-        response = await updateEvent(eventId || '', { ...formData, userId });
+    for (const key in formData) {
+      if (key === 'image' && formData[key].length > 0) {
+        data.append(key, formData[key][0]);
       } else {
-        response = await createEvents({ ...formData, userId });
+        data.append(key, formData[key]);
       }
-
-      setShowMessage(true);
-      setDataMessage(response);
-
-      setTimeout(() => {
-        setShowMessage(false);
-        router.push('/admin/events');
-      }, 3000);
-    } catch (error) {
-      console.error('Error creating/updating event:', error);
     }
+
+    let response;
+    if (eventId !== 'add') {
+      response = await updateEvent(eventId || '', data);
+    } else {
+      response = await createEvents(data);
+    }
+
+    setShowMessage(true);
+    setDataMessage(response);
+
+    setTimeout(() => {
+      setShowMessage(false);
+      router.push('/admin/events');
+    }, 3000);
   };
 
   return (
     <form onSubmit={handleSubmit(formSubmit)}>
       <div className="container mx-auto px-4">
-        {showMessage === true ? (
+        {showMessage === true && (
           <ShowMessage
             name={
               dataMessage.message === 'Event successfully created'
@@ -104,11 +94,11 @@ const FormEvents = () => {
             status={dataMessage.status}
             show={showMessage}
           />
-        ) : null}
+        )}
         <div className="text-2xl mb-4">Table Events</div>
         <div className="grid grid-cols-2 gap-4 items-center">
           <label className="label">Name</label>
-          <div className="">
+          <div>
             <input
               className="w-full border p-2"
               {...register('name')}
@@ -120,7 +110,7 @@ const FormEvents = () => {
           </div>
 
           <label className="label">Image</label>
-          <div className="">
+          <div>
             <input
               type="file"
               className="w-full border p-2"
@@ -132,7 +122,7 @@ const FormEvents = () => {
           </div>
 
           <label className="label">Free Event</label>
-          <div className="">
+          <div>
             <select className="w-full border p-2" {...register('isFree')}>
               <option value="" disabled selected>
                 Select is event set free
@@ -146,7 +136,7 @@ const FormEvents = () => {
           </div>
 
           <label className="label">Price</label>
-          <div className="">
+          <div>
             <input
               className="w-full border p-2"
               {...register('price')}
@@ -158,7 +148,7 @@ const FormEvents = () => {
           </div>
 
           <label className="label">Date</label>
-          <div className="">
+          <div>
             <input
               type="date"
               className="w-full border p-2"
@@ -170,7 +160,7 @@ const FormEvents = () => {
           </div>
 
           <label className="label">Time</label>
-          <div className="">
+          <div>
             <input
               className="w-full border p-2"
               type="text"
@@ -183,7 +173,7 @@ const FormEvents = () => {
           </div>
 
           <label className="label">Location</label>
-          <div className="">
+          <div>
             <input
               className="w-full border p-2"
               {...register('location')}
@@ -195,7 +185,7 @@ const FormEvents = () => {
           </div>
 
           <label className="label">Description</label>
-          <div className="">
+          <div>
             <textarea
               className="w-full h-[6.5rem] border p-2"
               {...register('description')}
@@ -209,7 +199,7 @@ const FormEvents = () => {
           </div>
 
           <label className="label">Available Seats</label>
-          <div className="">
+          <div>
             <input
               className="w-full border p-2"
               type="number"
@@ -224,7 +214,7 @@ const FormEvents = () => {
           </div>
 
           <label className="label">Category</label>
-          <div className="">
+          <div>
             <select className="w-full border p-2" {...register('categoryId')}>
               <option value="" disabled selected>
                 Select Category
