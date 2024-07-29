@@ -1,5 +1,6 @@
 // 'use server';
 // import { cookies } from 'next/headers';
+import { getCookie } from '@/actions/cookies';
 import axios from 'axios';
 
 const base_url_api = 'http://localhost:8000/api';
@@ -32,11 +33,16 @@ export async function getEvent(id: string) {
 }
 
 export async function getAllTableEvents(search: string, page: number) {
+  console.log('aaaaaaaaa');
+  const authToken = await getCookie('token');
   const url = base_url_api + '/events/table';
   const config = {
     params: {
       search,
       page,
+    },
+    headers: {
+      Authorization: 'Bearer ' + authToken,
     },
   };
   const res = await axios.get(url, config);
@@ -45,10 +51,12 @@ export async function getAllTableEvents(search: string, page: number) {
 }
 
 export async function createEvents(data: any) {
+  const authToken = await getCookie('token');
   const url = base_url_api + '/events';
   const res = await axios.post(url, data, {
     headers: {
       'Content-Type': 'multipart/form-data',
+      Authorization: 'Bearer ' + authToken,
     },
   });
 
@@ -56,10 +64,12 @@ export async function createEvents(data: any) {
 }
 
 export async function updateEvent(id: string, data: FormData) {
+  const authToken = await getCookie('token');
   const url = base_url_api + '/events/' + id;
   const res = await axios.put(url, data, {
     headers: {
       'Content-Type': 'multipart/form-data',
+      Authorization: 'Bearer ' + authToken,
     },
   });
 
@@ -67,8 +77,14 @@ export async function updateEvent(id: string, data: FormData) {
 }
 
 export async function deleteEvent(id: number) {
+  const authToken = await getCookie('token');
   const url = base_url_api + '/events/' + id;
-  const res = await axios.delete(url);
+
+  const res = await axios.delete(url, {
+    headers: {
+      Authorization: 'Bearer ' + authToken,
+    },
+  });
 
   return res.data;
 }
