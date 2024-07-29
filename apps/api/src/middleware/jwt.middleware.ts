@@ -24,25 +24,28 @@ export const verifyToken = async (
     console.log('AUTHORIZATION HEADER => ', req.header('Authorization'));
 
     const token = req.header('Authorization')?.replace('Bearer ', '');
-
-    console.log('token --> ', token);
+    console.log('Token from header:', token);
 
     if (!token) {
-      return res.status(401).send('Unauthorized');
+      console.log('Token not found');
+      return res.status(401).send('Unauthorized: No token provided');
     }
 
     const verifyUser = verify(token, 'mySecret');
+    console.log('Verified User:', verifyUser);
+
     if (!verifyUser) {
-      return res.status(401).send('Unauthorized');
+      console.log('Token verification failed');
+      return res.status(401).send('Unauthorized: Invalid token');
     }
 
-    req.user = verifyUser as User;
+    req.user = verifyUser as any;
 
     next();
   } catch (err) {
-    console.log(err);
+    console.log('Error during token verification:', err);
     res.status(500).send({
-      message: 'error',
+      message: 'Internal server error',
       error: (err as Error).message,
     });
   }

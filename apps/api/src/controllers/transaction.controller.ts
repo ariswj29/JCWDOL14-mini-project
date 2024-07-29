@@ -146,9 +146,6 @@ export const getTransaction = async (req: Request, res: Response) => {
       include: {
         transaction: true,
       },
-      include: {
-        transaction: true,
-      },
     });
 
     res.status(200).json({
