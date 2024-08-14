@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
 import prisma from '@/helpers/prisma';
 import { compare, genSalt, hash } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { config } from 'dotenv';
 import generateReferralCode from '@/helpers/generateReferralCode';
 import { loginSchema, registerSchema } from '@/schema/schema';
 import * as yup from 'yup';
+import { sendVerificationEmail } from '@/utils/nodemailer';
+import { generateVerificationToken } from '@/helpers/generateVerificationToken';
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -75,9 +77,15 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
+    const verificationToken = generateVerificationToken(user.id);
+    console.log(verificationToken, 'verToken', '||', email, 'userEmail');
+    const name = `${user.firstName} ${user.lastName}`;
+    sendVerificationEmail(email, verificationToken, name);
+
     res.status(201).json({
       status: 'success',
-      message: 'You have successfully registered',
+      message:
+        'You have successfully registered. Please check your email to verify your account',
       data: user,
     });
   } catch (error) {
@@ -122,6 +130,12 @@ export const login = async (req: Request, res: Response) => {
         message: 'Invalid email or password',
       });
     }
+    if (!user.verified) {
+      return res.json({
+        status: 'error',
+        message: 'Please verify your email to login',
+      });
+    }
     const jwtPayload = {
       firstName: user.firstName,
       email: user.email,
@@ -145,6 +159,48 @@ export const login = async (req: Request, res: Response) => {
     }
 
     res.status(400).json({ error: 'An unexpected error occurred' });
+  }
+};
+
+export const verificationEmail = async (req: Request, res: Response) => {
+  try {
+    const { token } = req.body;
+    console.log(token, 'token');
+
+    if (!token) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid or missing token',
+      });
+    }
+
+    const secret = process.env.JWT_SECRET_KEY || 'secret-key';
+
+    const decoded = verify(token as string, secret) as { userId: string };
+
+    console.log(decoded, 'decoded');
+
+    const user = await prisma.user.update({
+      where: {
+        id: Number(decoded.userId),
+      },
+      data: {
+        verified: true,
+      },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Email successfully verified',
+      user: user,
+    });
+  } catch (error) {
+    console.error('Verification error:', error);
+    res.status(400).json({
+      status: 'error',
+      message: 'Email verification failed',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
   }
 };
 
